@@ -1,28 +1,66 @@
+
 <template>
-  <div id="app">
-    <img src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <v-app id="inspire">
+    <navigation></navigation>
+    <header-bar></header-bar>
+    <v-content>
+      <router-view></router-view>
+       <!-- <router-view> -->
+    </v-content>
+    <v-btn fab bottom right color="pink" dark fixed @click.stop="dialog = !dialog">
+      <v-icon>add</v-icon>
+    </v-btn>
+    <!-- <v-dialog v-model="dialog" width="800px">
+      <v-card>
+        <v-card-title class="grey lighten-4 py-4 title">
+          Create contact
+        </v-card-title>
+        <v-container grid-list-sm class="pa-4">
+          <v-layout row wrap>
+            <v-flex xs12 align-center justify-space-between>
+              <v-layout align-center>
+                <v-avatar size="40px" class="mr-3">
+                  <img src="//ssl.gstatic.com/s2/oz/images/sge/grey_silhouette.png" alt="">
+                </v-avatar>
+                <v-text-field placeholder="Name"></v-text-field>
+              </v-layout>
+            </v-flex>
+            <v-flex xs6>
+              <v-text-field prepend-icon="business" placeholder="Company"></v-text-field>
+            </v-flex>
+            <v-flex xs6>
+              <v-text-field placeholder="Job title"></v-text-field>
+            </v-flex>
+            <v-flex xs12>
+              <v-text-field prepend-icon="mail" placeholder="Email"></v-text-field>
+            </v-flex>
+            <v-flex xs12>
+              <v-text-field type="tel" prepend-icon="phone" placeholder="(000) 000 - 0000" mask="phone"></v-text-field>
+            </v-flex>
+            <v-flex xs12>
+              <v-text-field prepend-icon="notes" placeholder="Notes"></v-text-field>
+            </v-flex>
+          </v-layout>
+        </v-container>
+        <v-card-actions>
+          <v-btn flat color="primary">More</v-btn>
+          <v-spacer></v-spacer>
+          <v-btn flat color="primary" @click="dialog = false">Cancel</v-btn>
+          <v-btn flat @click="dialog = false">Save</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog> -->
+  </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import HeaderBar from "./pages/layout/Headbar";
+import Navigation from "./pages/layout/Navigation";
 export default {
-  name: 'app',
-  components: {
-    HelloWorld
-  }
-}
-</script>
+    components: {
+        HeaderBar,
+        Navigation
+    },
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+};
+</script>
