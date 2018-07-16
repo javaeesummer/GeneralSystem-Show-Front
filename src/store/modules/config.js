@@ -5,9 +5,9 @@ export default {
         dialog: false,
         drawer: null,
         items: [
-            { icon: "contacts", text: "Contacts" },
-            { icon: "history", text: "Frequently contacted" },
-            { icon: "content_copy", text: "Duplicates" },
+            { icon: "contacts", text: "首页" ,routerName:"index"},
+           
+            { icon: "content_copy", text: "评审" ,routerName:"judge"},
           
             {
                 icon: "keyboard_arrow_up",

@@ -1,0 +1,98 @@
+<template>
+    <el-card shadow="never" :body-style="{ padding: '10px' }">
+
+        <span class="news__item-title" @click="to_another_page">{{data.title}}</span>
+        <v-layout column>
+            <v-flex>
+                <div class="article-excerpt">{{data.content}}</div>
+            </v-flex>
+            <v-flex>
+                <v-layout row justify-start align-cente>
+                    <v-flex md2 column>
+                        <v-layout>
+                            <v-icon color="green darken-2">outlined_flag</v-icon>
+                            <div class="article-meta">{{data.sponsorName}} </div>
+                        </v-layout>
+                    </v-flex>
+                    <v-flex md2 column>
+                        <v-layout>
+                            <v-icon color="green darken-2">access_time</v-icon>
+                            <div class="article-meta"> {{data.startData}}</div>
+                        </v-layout>
+                    </v-flex>
+                    <v-flex md2 column>
+                        <v-layout>
+                            <v-icon color="green darken-2">people_outline</v-icon>
+                            <div class="article-meta"> {{data.people}}</div>
+                        </v-layout>
+                    </v-flex>
+                </v-layout>
+
+            </v-flex>
+
+        </v-layout>
+
+    </el-card>
+</template>
+
+<script>
+export default {
+    methods: {
+        to_another_page() {
+            this.$router.push({
+                name: "activity",
+                params: {"activityId":this.data.activityId}
+            });
+        }
+    },
+    props: {
+        data:{
+            type:Object
+        },
+   
+    }
+};
+</script>
+
+<style>
+.header {
+    size: 14px;
+}
+.news__item-title {
+    display: inline;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 28px;
+    color: #212121;
+    position: relative;
+    vertical-align: middle;
+    cursor: pointer;
+}
+.article-excerpt {
+    margin-bottom: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-height: 1.5;
+    color: #888;
+    font-size: 14px;
+}
+.article-meta {
+    /* margin-bottom: 10px; */
+    margin-top: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+
+    color: #888;
+    font-size: 12px;
+    vertical-align: middle;
+
+    height: 20px;
+    line-height: 20px;
+}
+</style>

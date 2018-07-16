@@ -1,5 +1,5 @@
 <template>
-    <v-navigation-drawer :clipped="$vuetify.breakpoint.lgAndUp" v-model="config.drawer" fixed app>
+    <v-navigation-drawer :clipped="$vuetify.breakpoint.lgAndUp" v-model="config.drawer" fixed app temporary>
         <v-list dense>
             <template v-for="item in config.items">
                 <v-layout v-if="item.heading" :key="item.heading" row align-center>
@@ -20,7 +20,7 @@
                             </v-list-tile-title>
                         </v-list-tile-content>
                     </v-list-tile>
-                    <v-list-tile v-for="(child, i) in item.children" :key="i" @click="handleClick(item.text)">
+                    <v-list-tile v-for="(child, i) in item.children" :key="i" @click="handleClick(item.routerName)">
                         <v-list-tile-action v-if="child.icon">
                             <v-icon>{{ child.icon }}</v-icon>
                         </v-list-tile-action>
@@ -31,7 +31,7 @@
                         </v-list-tile-content>
                     </v-list-tile>
                 </v-list-group>
-                <v-list-tile v-else :key="item.text" @click="handleClick(item.text)">
+                <v-list-tile v-else :key="item.text" @click="handleClick(item.routerName)">
                     <v-list-tile-action>
                         <v-icon>{{ item.icon }}</v-icon>
                     </v-list-tile-action>
@@ -63,8 +63,8 @@ export default {
         handleSelect(key, keyPath) {
             // console.log(key, keyPath);
         },
-        handleClick(id){
-            console.log(id);
+        handleClick(routerName){
+           this.$router.push({name:routerName});
         }
     }
 };
