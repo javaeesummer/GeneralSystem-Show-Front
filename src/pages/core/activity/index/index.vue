@@ -1,7 +1,7 @@
 <template>
-    <v-container fluid grid-list-md>
+    <v-container fluid grid-list-md style="padding-top:5px">
         <v-layout row justify-center>
-            <v-flex d-flex xs12 sm6 md10>
+            <v-flex d-flex xs12 sm12 md10>
                 <el-card>
                     <v-layout column>
                         <v-flex>
@@ -30,35 +30,40 @@
             </v-flex>
         </v-layout>
         <v-layout row justify-center d-flex>
-
             <v-flex d-flex xs12 sm6 md8>
                 <v-layout column>
 
                     <v-flex>
                         <v-stepper v-model="e6" vertical>
                             <v-stepper-step :complete="e6 > 1" step="1">
-                                步骤一
+                                报名阶段
                                 <small>Summarize if needed</small>
                             </v-stepper-step>
                             <v-stepper-content step="1">
                                 <v-card color="grey lighten-3" class="mb-5" height="200px"></v-card>
                             </v-stepper-content>
-                            <v-stepper-step :complete="e6 > 2" step="2"> 步骤二</v-stepper-step>
+                            <v-stepper-step :complete="e6 > 2" step="2">作品提交</v-stepper-step>
                             <v-stepper-content step="2">
                                 <el-card class="box-card">
                                 </el-card>
                             </v-stepper-content>
-                            <v-stepper-step :complete="e6 > 3" step="3"> 步骤三</v-stepper-step>
+                            <v-stepper-step :complete="e6 > 3" step="3"> 大众评审</v-stepper-step>
                             <v-stepper-content step="3">
                                 <el-card class="box-card">
                                 </el-card>
                             </v-stepper-content>
-                            <v-stepper-step step="4"> 步骤四</v-stepper-step>
+                            <v-stepper-step :complete="e6 > 4" step="4"> 专家评审</v-stepper-step>
                             <v-stepper-content step="4">
                                 <v-card color="grey lighten-3" class="mb-5" height="200px"></v-card>
                                 <!-- <v-btn color="primary" @click="e6 = 1">Continue</v-btn>
                         <v-btn flat>Cancel</v-btn> -->
                             </v-stepper-content>
+                            <v-stepper-step :complete="e6 > 5" step="5"> 活动完成</v-stepper-step>
+                            <v-stepper-content step="5">
+                                <el-card class="box-card">
+                                </el-card>
+                            </v-stepper-content>
+                          
                         </v-stepper>
                     </v-flex>
                 </v-layout>
@@ -138,8 +143,7 @@ export default {
         },
         toWork() {
             this.$router.push({
-                name: "vote-work-index",
-                
+                name: "vote-work-index"
             });
         }
     }
@@ -161,5 +165,8 @@ export default {
     -ms-flex-align: center;
     align-items: center;
     vertical-align: middle;
+}
+.v-container{
+    padding-top: 5px;
 }
 </style>

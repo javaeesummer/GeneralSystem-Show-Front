@@ -1,24 +1,38 @@
 <template>
     <el-card shadow="never" :body-style="{ padding: '10px' }">
-
-        <span class="news__item-title" @click="to_another_page">{{data.title}}</span>
-        <v-layout column>
-
+        <v-layout row>
             <v-flex>
-                <div class="article-excerpt">{{data.content}}</div>
+                <v-layout column>
+                    <v-flex>
+                        <span class="news__item-title">第{{data.id}}号</span>
+                        <span class="news__item-title" @click="to_another_page">{{data.title}}</span>
+                    </v-flex>
+                    <v-flex>
+                        <div class="article-excerpt">{{data.describe}}</div>
+                    </v-flex>
+                    <v-flex>
+                        <span class="download">作品下载:</span>
+                        <span download="download-src">{{data.file_name}}</span>
+                    </v-flex>
+                    <v-flex>
+                        <span>票数:</span>
+                        <span>{{data.vote_number}}</span>
+                    </v-flex>
+                </v-layout>
             </v-flex>
-            <v-flex>
-                <v-chip label color="green" text-color="white" small v-if="data.review==='true'">
-                    <v-icon left v-if="data.review">label</v-icon>已评审
-                </v-chip>
-                <v-chip label color="pink" text-color="white" small v-else>
-                    <v-icon left v-if="data.review">label</v-icon>未评审
-                </v-chip>
-                
+            <v-spacer></v-spacer>
+            <v-flex md2>
+                <v-layout align-center fill-height>
+                    <v-flex v-if="!finish">
+                        <v-btn large >投票</v-btn>
+                    </v-flex>
+                   
+                </v-layout>
             </v-flex>
         </v-layout>
 
     </el-card>
+
 </template>
 
 <script>
@@ -36,6 +50,9 @@ export default {
     props: {
         data: {
             type: Object
+        },
+        finish: {
+            type: Boolean
         },
         router_param_name: {
             type: String,
@@ -62,10 +79,27 @@ export default {
     color: #212121;
     position: relative;
     vertical-align: middle;
-    cursor: pointer;
+    margin-right: 10px;
+}
+.news__item-subtitle {
+    display: inline;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 28px;
+    color: #212121;
+    position: relative;
+    vertical-align: middle;
+}
+.download {
+    font-size: 14px;
+    color: #888;
+}
+.download-src {
+    font-size: 14px;
+
 }
 .article-excerpt {
-    margin-bottom: 10px;
+    /* margin-bottom: 10px; */
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;

@@ -40,4 +40,7 @@ export default {
     align-items: center;
     vertical-align: middle;
 }
+.v-container{
+    padding-top: 5px;
+}
 </style>

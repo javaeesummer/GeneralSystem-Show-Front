@@ -10,9 +10,9 @@
                     <div v-for="o in 4" :key="o" class="text item">
                         <v-flex ma-2>
                             <activity-item :data="items[o-1]" 
-                            :router_param_name="activityId"
+                       
                             :router_param_value="items[o-1].activityId"
-                            :router_name="activity"
+                          
                             ></activity-item>
                         </v-flex>
                     </div>

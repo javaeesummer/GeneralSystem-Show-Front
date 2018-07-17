@@ -25,4 +25,7 @@ export default {
 </script>
 
 <style scoped>
+.v-container{
+    padding-top: 5px;
+}
 </style>

@@ -1,7 +1,7 @@
 <template>
-    <v-container fluid grid-list-md>
+    <v-container fluid grid-list-md class="main-container">
         <v-layout row justify-center>
-            <v-flex d-flex xs12 sm6 md9>
+            <v-flex d-flex xs12 sm6 md10>
                 <el-card>
                     <v-layout column>
                         <v-flex>
@@ -23,7 +23,7 @@
             </v-flex>
         </v-layout>
         <v-layout row justify-center>
-            <v-flex d-flex xs12 sm6 md9>
+            <v-flex d-flex xs12 sm6 md10>
                 <el-card :body-style="{padding:'10px'}">
                     <v-chip label>全部</v-chip>
                     <v-chip label color="pink" text-color="white">
@@ -120,5 +120,8 @@ export default {
 .card-body {
     padding-top: 5px;
     padding-left: 5px;
+}
+.main-container{
+    padding-top: 5px;
 }
 </style>

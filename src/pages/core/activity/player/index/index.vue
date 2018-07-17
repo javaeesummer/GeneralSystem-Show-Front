@@ -1,7 +1,7 @@
 <template>
-    <v-container fluid grid-list-md>
+    <v-container fluid grid-list-md class="main-container">
         <v-layout row justify-center>
-            <v-flex d-flex xs12 sm6 md9>
+            <v-flex d-flex xs12 sm6 md10>
                 <el-card>
                     <v-layout column>
                         <v-flex>
@@ -23,7 +23,7 @@
             </v-flex>
         </v-layout>
         <v-layout row justify-center>
-            <v-flex d-flex xs12 sm6 md9>
+            <v-flex d-flex xs12 sm6 md10>
 
                 <v-stepper v-model="e6" vertical>
                     <v-stepper-step :complete="e6 > 1" step="1">
@@ -34,15 +34,15 @@
                         <v-card color="grey lighten-1" class="mb-5" height="200px"></v-card>
                         <v-btn color="primary" @click="e6 = 2">提交作品</v-btn>
                     </v-stepper-content>
-                    <v-stepper-step :complete="e6 > 2" step="2">Configure analytics for this app</v-stepper-step>
+                    <v-stepper-step :complete="e6 > 2" step="2">大众评审</v-stepper-step>
                     <v-stepper-content step="2">
                         <v-card color="grey lighten-1" class="mb-5" height="200px"></v-card>
                     </v-stepper-content>
-                    <v-stepper-step :complete="e6 > 3" step="3">Select an ad format and name ad unit</v-stepper-step>
+                    <v-stepper-step :complete="e6 > 3" step="3">专家评审</v-stepper-step>
                     <v-stepper-content step="3">
                         <v-card color="grey lighten-1" class="mb-5" height="200px"></v-card>
                     </v-stepper-content>
-                    <v-stepper-step step="4">View setup instructions</v-stepper-step>
+                    <v-stepper-step step="4">最终结果</v-stepper-step>
                     <v-stepper-content step="4">
                         <v-card color="grey lighten-1" class="mb-5" height="200px"></v-card>
 
@@ -95,5 +95,8 @@ export default {
     -ms-flex-align: center;
     align-items: center;
     vertical-align: middle;
+}
+.main-container{
+    padding-top: 5px;
 }
 </style>

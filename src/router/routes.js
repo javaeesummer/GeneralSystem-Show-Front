@@ -1,8 +1,6 @@
 // import { resolve } from "path";
 const meta = { requiresAuth: true }
 
-
-
 //  1.common
 import activity_layout from '../pages/core/activity/layout'
 import activity_index from '../pages//core/activity/index/index'
@@ -20,15 +18,12 @@ import vote_work_index from '../pages/core/activity/visitor/vote-work/index'
 import vote_work_onework from "../pages/core/activity/visitor/vote-work-onework/index"
 
 
-
-
 // const alive = true
 const routes = [
     {
         path: '/',
         name: "index",
         component: myindex,
-
     },
     {
         path: '/activity/:activityId',
@@ -56,6 +51,7 @@ const routes = [
                 path: 'review-work/:workId',
                 name: 'review-work',
                 component: review_work_index,
+                
             },
             {
                 path: 'vote-work',
@@ -74,11 +70,6 @@ const routes = [
                         component: vote_work_onework,
                     },
                 ]
-            },
-            {
-                path: 'review-work/:workId',
-                name: 'review-work',
-                component: review_work_index,
             },
             {
                 path: 'final_result',
