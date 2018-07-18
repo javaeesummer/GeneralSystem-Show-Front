@@ -17,7 +17,7 @@
             </v-flex>
         </v-layout>
         <v-layout row justify-center>
-            <v-flex d-flex xs12 sm6 md10>
+            <v-flex d-flex xs12 sm6 md8>
                 <el-card>
                     <v-layout column wrap>
                         <v-flex>
@@ -27,10 +27,26 @@
                             <v-layout column>
                                 <div v-for="item in items" :key="item.workId">
                                     <v-flex>
-                                        <work-item-show :data="item" :finish="finish"></work-item-show>
+                                        <work-item-show :data="item" :finish="finish" :router_param_value="item.id"></work-item-show>
                                     </v-flex>
                                 </div>
                             </v-layout>
+                        </v-flex>
+                        <v-flex class="text-xs-center">
+                            <el-pagination background layout="prev, pager, next" :total="total" :page-size="page_size" @prev-click="prev_click" @next-click="next_click">
+                            </el-pagination>
+                        </v-flex>
+                    </v-layout>
+                </el-card>
+            </v-flex>
+            <v-flex md2>
+                <el-card>
+                    <v-layout column wrap>
+                        <v-flex>
+                            <h2>专家评委</h2>
+                        </v-flex>
+                        <v-flex>
+                            may not
                         </v-flex>
                     </v-layout>
                 </el-card>
@@ -48,6 +64,8 @@ export default {
     },
     data() {
         return {
+            total: 20,
+            page_size: 10,
             activity_state: "进行中",
             finish: false,
             items: [
@@ -77,12 +95,20 @@ export default {
                 }
             ]
         };
+    },
+    methods: {
+        prev_click(current_page) {
+            // console.log("current_page", current_page);
+        },
+        next_click(current_page) {
+            // console.log("current_page", current_page);
+        }
     }
 };
 </script>
 
 <style scoped>
-.main-container{
+.main-container {
     padding-top: 5px;
 }
 </style>

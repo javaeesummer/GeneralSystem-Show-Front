@@ -24,7 +24,6 @@
                                 </span>
                             </v-flex>
                         </v-layout>
-
                     </v-layout>
                 </el-card>
             </v-flex>
@@ -63,7 +62,7 @@
                                 <el-card class="box-card">
                                 </el-card>
                             </v-stepper-content>
-                          
+
                         </v-stepper>
                     </v-flex>
                 </v-layout>
@@ -111,6 +110,7 @@
 
 <script>
 import ActivityItem from "@/components/activity-item/index.vue";
+import Cookie from "js-cookie";
 export default {
     data() {
         return {
@@ -128,18 +128,24 @@ export default {
     components: {
         ActivityItem
     },
+    created() {},
     methods: {
         toPlayer() {
-            this.$router.push({
-                name: "player",
-                params: { playerId: 123 }
-            });
+            if (Cookie.get("uuid")) {
+                this.$router.push({
+                    name: "player",
+                    params: { playerId: 123 }
+                });
+            }
         },
         toJudeg() {
-            this.$router.push({
-                name: "judge",
-                params: { judgeId: 123 }
-            });
+            if (Cookie.get("uuid")) {
+                console.log
+                this.$router.push({
+                    name: "judge",
+                    params: { judgeId: 123 }
+                });
+            }
         },
         toWork() {
             this.$router.push({
@@ -166,7 +172,7 @@ export default {
     align-items: center;
     vertical-align: middle;
 }
-.v-container{
+.v-container {
     padding-top: 5px;
 }
 </style>

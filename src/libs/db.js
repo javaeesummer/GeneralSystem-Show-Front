@@ -8,8 +8,8 @@ db.defaults({
     themeActiveName: [],
     pageOpenedList: [],
     updateNotify: [],
-    username: []
-})
-    .write()
+    username: [],
+    
+}).write()
 
 export default db

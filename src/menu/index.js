@@ -28,11 +28,18 @@ export const activity = [
   },
   {
     router_name: "vote-work-index",
-    title: "作品投票"
+    title: "作品列表"
+  },
+  {
+    router_name: "vote-work",
+    title: "参赛作品"
   },
   {
     router_name: "final-result",
     title: "最终结果"
+  }, {
+    router_name: "vote-work-onework",
+    title: "作品"
   }
 ]
 

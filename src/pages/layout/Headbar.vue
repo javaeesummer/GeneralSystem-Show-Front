@@ -6,23 +6,24 @@
                 <span class="hidden-md-and-down" @click="toHome()">通用系统作品</span>
            
         </v-toolbar-title>
-        <v-text-field flat solo-inverted hide-details prepend-inner-icon="search" label="Search" class="hidden-sm-and-down"></v-text-field>
+        <!-- <v-text-field flat solo-inverted hide-details prepend-inner-icon="search" label="Search" class="hidden-sm-and-down"></v-text-field> -->
         <v-spacer></v-spacer>
-        <v-btn icon>
+        <!-- <v-btn icon>
             <v-icon>apps</v-icon>
-        </v-btn>
-        <v-menu transition="slide-y-transition" bottom>
+        </v-btn> -->
+        <v-menu offset-y left >
             <v-toolbar-title slot="activator">
                 <v-icon>perm_identity</v-icon>
             </v-toolbar-title>
             <v-list>
-                <v-list-tile v-for="(item, index) in items" :key="index">
-                    <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+                <v-list-tile @click="filter()">
+                    <v-list-tile-title v-if="!user.is_login" @click="login()">登录</v-list-tile-title>
+                    <v-list-tile-title v-else @click="loginOut()">注销</v-list-tile-title>
                 </v-list-tile>
             </v-list>
         </v-menu>
-
     </v-toolbar>
+    
 </template>
     
 <script>
@@ -30,7 +31,8 @@ import { mapState } from "vuex";
 export default {
     computed: {
         ...mapState({
-            config: state => state.config
+            config: state => state.config,
+            user:state=>state.user
         })
     },
     methods: {
@@ -39,16 +41,23 @@ export default {
         },
         toHome(){
             this.$router.push({name:"index"})
+        },
+        filter(){
+            
+        },
+        login(){
+            this.$store.commit('saveloginDialog',true)
+
+        },
+        loginOut(){
+
         }
     },
     data() {
         return {
             items: [
                 {
-                    title: "个人中心"
-                },
-                {
-                    title: "注销"
+                    title: "登录"
                 }
             ]
         };

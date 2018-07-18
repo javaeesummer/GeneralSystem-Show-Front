@@ -43,9 +43,9 @@ export default {
                         this.items.push(add_item[0]);
                     }
                 });
-                console.log("1",this.items);
+               
                 this.items[this.items.length - 1].disabled = true;
-                console.log("2",this.items);
+            
             },
             immediate: true
         }

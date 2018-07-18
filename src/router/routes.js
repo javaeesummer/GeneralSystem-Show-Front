@@ -1,6 +1,7 @@
 // import { resolve } from "path";
 const meta = { requiresAuth: true }
 
+import register from '../pages/core/register/index'
 //  1.common
 import activity_layout from '../pages/core/activity/layout'
 import activity_index from '../pages//core/activity/index/index'
@@ -26,6 +27,11 @@ const routes = [
         component: myindex,
     },
     {
+        path: '/register',
+        name: "register",
+        component: register,
+    },
+    {
         path: '/activity/:activityId',
         name: "activity",
         redirect: { name: "activity-index" },
@@ -40,18 +46,19 @@ const routes = [
                 path: 'judge/:judgeId',
                 name: "judge",
                 component: judge_index,
-
+                meta: meta
             },
             {
                 path: 'player/:playerId',
                 name: 'player',
                 component: player_index,
+                meta: meta
             },
             {
                 path: 'review-work/:workId',
                 name: 'review-work',
                 component: review_work_index,
-                
+                meta: meta
             },
             {
                 path: 'vote-work',
@@ -65,7 +72,7 @@ const routes = [
                         component: vote_work_index,
                     },
                     {
-                        path: 'vote/:workId',
+                        path: 'work/:workId',
                         name: 'vote-work-onework',
                         component: vote_work_onework,
                     },

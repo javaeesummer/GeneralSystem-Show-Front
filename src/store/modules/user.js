@@ -1,38 +1,12 @@
 import db from '@/libs/db.js';
-
 export default {
     state: {
-        login_dialog: false,
-        dialog: false,
-        drawer: null,
-        items: [
-            { icon: "contacts", text: "首页", routerName: "index" },
-
-            { icon: "content_copy", text: "评审", routerName: "judge" },
-
-            {
-                icon: "keyboard_arrow_up",
-                "icon-alt": "keyboard_arrow_down",
-                text: "More",
-                model: false,
-                children: [
-                    { text: "Import" },
-                    { text: "Export" },
-                    { text: "Print" },
-                    { text: "Undo changes" },
-                    { text: "Other contacts" }
-                ]
-            },
-            { icon: "settings", text: "Settings" },
-            { icon: "chat_bubble", text: "Send feedback" },
-            { icon: "help", text: "Help" },
-            { icon: "phonelink", text: "App downloads" },
-            { icon: "keyboard", text: "Go to the old version" }
-        ]
+       is_login:false,
+       user_type:"admin",
     },
     mutations: {
-        saveloginDialog(state, login_dialog) {
-            state.login_dialog = login_dialog
+        saveLogin(state,is_login){
+            state.is_login=is_login
         },
         /**
             * @class 通用工具

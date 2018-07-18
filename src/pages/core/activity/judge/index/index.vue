@@ -42,6 +42,7 @@
                 </el-card>
             </v-flex>
         </v-layout>
+       
     </v-container>
 </template>
 
@@ -50,6 +51,7 @@ import WorkItem from "@/components/work-item-review/index.vue";
 export default {
     data() {
         return {
+            dialog: false,
             lorem: "lorem",
             activity: {
                 name: "我的评审",
@@ -61,7 +63,8 @@ export default {
                     title: "作品1",
                     workId: "3",
                     review: "true",
-                    content: "活动简介"
+                    content: "活动简介",
+                    
                 },
                 {
                     title: "作品2",
@@ -88,18 +91,14 @@ export default {
         WorkItem
     },
     methods: {
-        getWork(){
-
-        },
+        getWork() {},
         toPlayer() {
             this.$router.push({ name: "player" });
         },
         toJudeg() {
             this.$router.push({ name: "judge" });
         },
-        filterWork(){
-            
-        }
+        filterWork() {}
     }
 };
 </script>
@@ -121,7 +120,7 @@ export default {
     padding-top: 5px;
     padding-left: 5px;
 }
-.main-container{
+.main-container {
     padding-top: 5px;
 }
 </style>

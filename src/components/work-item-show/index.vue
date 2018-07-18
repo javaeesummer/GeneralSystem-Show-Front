@@ -1,7 +1,7 @@
 <template>
     <el-card shadow="never" :body-style="{ padding: '10px' }">
         <v-layout row>
-            <v-flex>
+            <v-flex >
                 <v-layout column>
                     <v-flex>
                         <span class="news__item-title">第{{data.id}}号</span>
@@ -21,14 +21,14 @@
                 </v-layout>
             </v-flex>
             <v-spacer></v-spacer>
-            <v-flex md2>
+            <!-- <v-flex md2>
                 <v-layout align-center fill-height>
                     <v-flex v-if="!finish">
                         <v-btn large >投票</v-btn>
                     </v-flex>
                    
                 </v-layout>
-            </v-flex>
+            </v-flex> -->
         </v-layout>
 
     </el-card>
@@ -64,7 +64,7 @@ export default {
         },
         router_name: {
             type: String,
-            default: "review-work"
+            default: "vote-work-onework"
         }
     }
 };

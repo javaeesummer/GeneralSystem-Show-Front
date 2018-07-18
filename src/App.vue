@@ -5,62 +5,75 @@
     <header-bar></header-bar>
     <v-content>
       <router-view></router-view>
-       <!-- <router-view> -->
+      <!-- <router-view> -->
     </v-content>
-    <!-- <v-btn fab bottom right color="pink" dark fixed @click.stop="dialog = !dialog">
-      <v-icon>add</v-icon>
-    </v-btn> -->
-    <!-- <v-dialog v-model="dialog" width="800px">
-      <v-card>
-        <v-card-title class="grey lighten-4 py-4 title">
-          Create contact
-        </v-card-title>
-        <v-container grid-list-sm class="pa-4">
-          <v-layout row wrap>
-            <v-flex xs12 align-center justify-space-between>
-              <v-layout align-center>
-                <v-avatar size="40px" class="mr-3">
-                  <img src="//ssl.gstatic.com/s2/oz/images/sge/grey_silhouette.png" alt="">
-                </v-avatar>
-                <v-text-field placeholder="Name"></v-text-field>
+    <v-layout row justify-center>
+      <v-dialog v-model="config.login_dialog" persistent max-width="500px">
+
+        <v-card>
+          <v-card-title>
+            <span class="headline">登录</span>
+          </v-card-title>
+          <v-card-text>
+            <v-container grid-list-md>
+              <v-layout wrap>
+                <v-flex xs12>
+                  <v-text-field label="账号名" required></v-text-field>
+                </v-flex>
+                <v-flex xs12>
+                  <v-text-field label="密码" type="password" required></v-text-field>
+                </v-flex>
+                <small>*没有账号?</small>
+                <small class="register" @click="toRegister()">注册</small>
               </v-layout>
-            </v-flex>
-            <v-flex xs6>
-              <v-text-field prepend-icon="business" placeholder="Company"></v-text-field>
-            </v-flex>
-            <v-flex xs6>
-              <v-text-field placeholder="Job title"></v-text-field>
-            </v-flex>
-            <v-flex xs12>
-              <v-text-field prepend-icon="mail" placeholder="Email"></v-text-field>
-            </v-flex>
-            <v-flex xs12>
-              <v-text-field type="tel" prepend-icon="phone" placeholder="(000) 000 - 0000" mask="phone"></v-text-field>
-            </v-flex>
-            <v-flex xs12>
-              <v-text-field prepend-icon="notes" placeholder="Notes"></v-text-field>
-            </v-flex>
-          </v-layout>
-        </v-container>
-        <v-card-actions>
-          <v-btn flat color="primary">More</v-btn>
-          <v-spacer></v-spacer>
-          <v-btn flat color="primary" @click="dialog = false">Cancel</v-btn>
-          <v-btn flat @click="dialog = false">Save</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog> -->
+            </v-container>
+
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="blue darken-1" flat @click.native="closeDialog()">取消</v-btn>
+            <v-btn color="blue darken-1" flat @click.native="login()">保存</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-layout>
+
   </v-app>
 </template>
 
 <script>
 import HeaderBar from "./pages/layout/Headbar";
 import Navigation from "./pages/layout/Navigation";
+import { mapState } from "vuex";
+import Cookie from "js-cookie";
 export default {
+    computed: {
+        ...mapState({
+            config: state => state.config,
+            user: state => state.user
+        })
+    },
     components: {
         HeaderBar,
         Navigation
     },
-
+    methods: {
+        toRegister() {
+            this.$router.push({ name: "register" });
+        },
+        closeDialog() {
+            this.$store.commit("saveloginDialog", false);
+        },
+        login() {
+            Cookie.set("uuid","woshiuuid");
+            this.$store.commit("saveloginDialog", false);
+        }
+    }
 };
 </script>
+<style scoped>
+.register {
+    color: blue;
+    cursor: pointer;
+}
+</style>

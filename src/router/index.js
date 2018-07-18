@@ -2,10 +2,10 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 // 路由数据
 import routes from './routes'
-
+import Cookie from 'js-cookie'
 Vue.use(VueRouter)
 
-let router = new VueRouter({ routes:routes })
+let router = new VueRouter({ routes: routes })
 
 /**
  * 路由拦截
@@ -14,6 +14,16 @@ let router = new VueRouter({ routes:routes })
 router.beforeEach((to, from, next) => {
   // 验证当前路由所有的匹配中是否需要有登陆验证的
   if (to.matched.some(r => r.meta.requiresAuth)) {
+    console.log(Cookie.get("uui2d"))
+    if (Cookie.get("uuid")) {
+      next();
+    } else {
+      next({
+        name: 'index'
+      })
+    }
+
+
     // 这里暂时将cookie里是否存有token作为验证是否登陆的条件
     // 请根据自身业务需要修改
     // if (Cookies.get('token')) {
