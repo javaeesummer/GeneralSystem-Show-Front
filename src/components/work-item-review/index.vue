@@ -9,7 +9,7 @@
                     <div class="article-excerpt">{{data.content}}</div>
                 </v-flex>
                 <v-flex>
-                    <v-chip label color="green" text-color="white" small v-if="data.review==='true'">
+                    <v-chip label color="green" text-color="white" small v-if="data.review===true">
                         <v-icon left v-if="data.review">label</v-icon>已评审
                     </v-chip>
                     <v-chip label color="pink" text-color="white" small v-else>
@@ -20,7 +20,7 @@
             </v-layout>
 
         </el-card>
-        <v-dialog v-model="dialog" persistent max-width="500px" >
+        <v-dialog v-model="dialog" persistent max-width="500px">
             <v-card>
                 <v-card-title>
                     <span class="headline">作品评审</span>
@@ -74,7 +74,7 @@
                                         <v-subheader>你的评分</v-subheader>
                                     </v-flex>
                                     <v-flex xs8 md6>
-                                        <v-text-field suffix="分"></v-text-field>
+                                      <v-text-field :value="data.grade"  solo ></v-text-field>
                                     </v-flex>
                                 </v-layout>
                             </v-flex>
@@ -84,7 +84,7 @@
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="blue darken-1" flat @click.native="dialog = false">关闭</v-btn>
-                    <v-btn color="blue darken-1" flat @click.native="upGrade">保存</v-btn>
+                    <v-btn color="blue darken-1" flat @click.native="upGrade">提交</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -96,10 +96,10 @@
 export default {
     methods: {
         to_another_page() {
-           this.dialog=true
+            this.dialog = true;
         },
-        upGrade(){
-            this.dialog = false
+        upGrade() {
+            this.dialog = false;
         }
     },
     props: {
@@ -119,10 +119,10 @@ export default {
             default: "review-work"
         }
     },
-    data(){
-        return{
-            dialog:false
-        }
+    data() {
+        return {
+            dialog: false
+        };
     }
 };
 </script>

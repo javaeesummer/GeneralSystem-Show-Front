@@ -22,62 +22,152 @@
                 </el-card>
             </v-flex>
         </v-layout>
+
+        <v-dialog v-model="dialog" persistent max-width="500px">
+            <v-card>
+                <v-card-title>
+                    <span class="headline">上传作品</span>
+                </v-card-title>
+                <v-card-text>
+                    <v-container grid-list-md>
+                        <v-layout wrap>
+                            <v-flex xs12>
+                                <v-text-field label="作品名" required></v-text-field>
+                            </v-flex>
+                            <v-flex xs12>
+                                <v-text-field label="作品简介" required></v-text-field>
+                            </v-flex>
+                            <v-flex xs12>
+                                <el-upload ref="upload" action="http://47.104.236.227:8080/summar/uploadFile" :limit="limit" :data="upLoadData" :onError="uploadError" :onSuccess="uploadSuccess">
+                                    <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+                                </el-upload>
+                            </v-flex>
+                        </v-layout>
+                    </v-container>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" flat @click.native="dialog = false">关闭</v-btn>
+                    <v-btn color="blue darken-1" flat @click.native="uploadError()">上传</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
         <v-layout row justify-center>
             <v-flex d-flex xs12 sm6 md10>
+                <v-stepper v-model="step" vertical>
+                    <v-stepper-step :complete="step > 1" step="1">
+                        作品提交阶段
 
-                <v-stepper v-model="e6" vertical>
-                    <v-stepper-step :complete="e6 > 1" step="1">
-                        {{commit}}
-                        <small>Summarize if needed</small>
                     </v-stepper-step>
                     <v-stepper-content step="1">
-                        <v-card color="grey lighten-1" class="mb-5" height="200px"></v-card>
-                        <v-btn color="primary" @click="e6 = 2">提交作品</v-btn>
+                        <small>{{workState[state===0?0:1].state_name}}</small>
+                        <v-btn color="primary" @click="commitWork()">提交作品</v-btn>
                     </v-stepper-content>
-                    <v-stepper-step :complete="e6 > 2" step="2">大众评审</v-stepper-step>
+                    <v-stepper-step :complete="step > 2" step="2">大众评审阶段
+                    </v-stepper-step>
                     <v-stepper-content step="2">
-                        <v-card color="grey lighten-1" class="mb-5" height="200px"></v-card>
+                        <small>{{workState[state===2?2:3].state_name}}</small>
                     </v-stepper-content>
-                    <v-stepper-step :complete="e6 > 3" step="3">专家评审</v-stepper-step>
+                    <v-stepper-step :complete="step > 3" step="3">专家评审阶段</v-stepper-step>
                     <v-stepper-content step="3">
-                        <v-card color="grey lighten-1" class="mb-5" height="200px"></v-card>
+                        <small>{{workState[state===4?4:5].state_name}}</small>
                     </v-stepper-content>
                     <v-stepper-step step="4">最终结果</v-stepper-step>
                     <v-stepper-content step="4">
-                        <v-card color="grey lighten-1" class="mb-5" height="200px"></v-card>
-
+                        <small>{{workState[state].state_name}}</small>
                     </v-stepper-content>
                 </v-stepper>
-
             </v-flex>
         </v-layout>
     </v-container>
 </template>
 
 <script>
-import ActivityItem from "@/components/activity-item/index.vue";
+import http_work from "@/http/work";
+import http_player from "@/http/player";
+import http_activity from "@/http/activity";
 export default {
+    created() {
+        this.init();
+    },
     data() {
         return {
-            lorem: "lorem",
+            upLoadData: {
+                attendorod:"123",
+                description:"123",
+                workname:"asd"
+            },
+            limit: 1,
+            dialog: false,
             activity: {
                 name: "我的作品",
                 describe: "作品描述",
                 attend_person: "未上传"
             },
-            e6: 0,
-            commit: "提交"
+            step: 0,
+            /*
+            我的作品状态
+            0.未提交
+            1.已提交
+            2.大众评审中
+            3.大众评审完毕
+            4.专家评审中
+            5.专家评审完毕
+            6.最终结果
+            */
+            state: 0,
+            workState: [
+                {
+                    state_name: "未提交"
+                },
+                {
+                    state_name: "已提交"
+                },
+                {
+                    state_name: "大众评审中"
+                },
+                {
+                    state_name: "大众评审完毕"
+                },
+                {
+                    state_name: "专家评审中"
+                },
+                {
+                    state_name: "专家评审完毕"
+                },
+                {
+                    state_name: "最终结果"
+                }
+            ]
         };
     },
-    components: {
-        ActivityItem
-    },
     methods: {
-        toPlayer() {
-            this.$router.push({ name: "player" });
+        commitWork() {
+            this.dialog = true;
         },
-        toJudeg() {
-            this.$router.push({ name: "judge" });
+        submitUpload() {
+            this.$refs.upload.submit();
+        },
+        uploadSuccess() {},
+        uploadError() {},
+        init() {
+            this.getActivity();
+            this.getPlayer();
+        },
+        judgeState() {
+            //判断当前作品的状态
+        },
+        async getActivity() {
+            try {
+                let data = {};
+                let activity = await http_activity.getActivityById(this, data);
+            } catch (error) {}
+        },
+        async getPlayer() {
+            try {
+                let data = {};
+                let player = await http_player.getPlayerById(this, data);
+            } catch (error) {}
         }
     }
 };
@@ -96,7 +186,7 @@ export default {
     align-items: center;
     vertical-align: middle;
 }
-.main-container{
+.main-container {
     padding-top: 5px;
 }
 </style>

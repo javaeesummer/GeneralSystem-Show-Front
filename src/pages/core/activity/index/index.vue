@@ -36,7 +36,6 @@
                         <v-stepper v-model="e6" vertical>
                             <v-stepper-step :complete="e6 > 1" step="1">
                                 报名阶段
-                                <small>Summarize if needed</small>
                             </v-stepper-step>
                             <v-stepper-content step="1">
                                 <v-card color="grey lighten-3" class="mb-5" height="200px"></v-card>
@@ -111,10 +110,11 @@
 <script>
 import ActivityItem from "@/components/activity-item/index.vue";
 import Cookie from "js-cookie";
+import http_activity from "@/http/activity";
+
 export default {
     data() {
         return {
-            lorem: "lorem",
             activity: {
                 name: "活动标题",
                 describe: "活动描述",
@@ -128,7 +128,9 @@ export default {
     components: {
         ActivityItem
     },
-    created() {},
+    created() {
+        this.init()
+    },
     methods: {
         toPlayer() {
             if (Cookie.get("uuid")) {
@@ -140,7 +142,7 @@ export default {
         },
         toJudeg() {
             if (Cookie.get("uuid")) {
-                console.log
+                console.log;
                 this.$router.push({
                     name: "judge",
                     params: { judgeId: 123 }
@@ -151,6 +153,23 @@ export default {
             this.$router.push({
                 name: "vote-work-index"
             });
+        },
+        async getActivity() {
+            try {
+                let data = {
+                    activityId:this.$route.params.activityId
+                };
+                await http_activity.getActivityById(this, data);
+            } catch (error) {}
+        },
+        async getActivityPoint() {
+            try {
+                let data = {};
+                await http_activity.getActivityPointById(this, data);
+            } catch (error) {}
+        },
+        init(){
+
         }
     }
 };

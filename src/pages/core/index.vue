@@ -24,41 +24,17 @@
 
 <script>
 import ActivityItem from "@/components/activity-item/index.vue";
-import http_activity from "@/http/activity.js";
+
 export default {
     components: {
         ActivityItem
     },
     methods: {
-        axios_getActivitys() {
-            var that = this;
-            // console.log("12")
-            let LoginParam = {
-                username: "a",
-                password: "123"
-            };
-            return new Promise((resolve, reject) => {
-                that.$axios
-                    .post("http://47.104.236.227:8080/summar/user/login", this.$qs.stringify(LoginParam))
-                    .then(result => {
-                        resolve();
-                    })
-                    .catch(err => {
-                        reject(err);
-                    });
-            });
-        },
+       
         init() {
-            this.getActivitys();
+            // this.getActivitys();
         },
-        async getActivitys() {
-            try {
-                await http_activity.getActivitys(this);
-                // this.items=await this.axios_getActivitys();
-            } catch (error) {
-                console.log("error", error);
-            }
-        }
+       
     },
     created() {
         this.init();

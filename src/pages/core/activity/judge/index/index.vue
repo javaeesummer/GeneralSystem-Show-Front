@@ -5,18 +5,11 @@
                 <el-card>
                     <v-layout column>
                         <v-flex>
-                            <h2>{{activity.name}}</h2>
+                            <h2>{{page.name}}</h2>
                         </v-flex>
                         <v-flex>
-                            <span>{{activity.describe}}</span>
-                        </v-flex>
-                        <v-flex>
-                            <span class="v-icon">
-                                <svg version="1.1" role="presentation" width="9.142857142857142" height="9.142857142857142" viewBox="0 0 1024 1024" class="svg-icon active" style="width: 15px; height: 15px; transform: rotate(0deg) scale(1, 1);">
-                                    <path d="M987.428571 369.714286q0 12.571429-14.857143 27.428571l-207.428571 202.285714 49.142857 285.714286q0.571429 4 0.571429 11.428571 0 12-6 20.285714t-17.428571 8.285714q-10.857143 0-22.857143-6.857143l-256.571429-134.857143-256.571429 134.857143q-12.571429 6.857143-22.857143 6.857143-12 0-18-8.285714t-6-20.285714q0-3.428571 1.142857-11.428571l49.142857-285.714286-208-202.285714q-14.285714-15.428571-14.285714-27.428571 0-21.142857 32-26.285714l286.857143-41.714286 128.571429-260q10.857143-23.428571 28-23.428571t28 23.428571l128.571429 260 286.857143 41.714286q32 5.142857 32 26.285714z" stroke="transparent"></path>
-                                </svg>
-                                <span class="v-icon-number">{{activity.attend_person}}</span>
-                            </span>
+                            <span>{{page.describe}}</span>
+                            <span>{{page.describe}}</span>
                         </v-flex>
                     </v-layout>
                 </el-card>
@@ -25,14 +18,14 @@
         <v-layout row justify-center>
             <v-flex d-flex xs12 sm6 md10>
                 <el-card :body-style="{padding:'10px'}">
-                    <v-chip label>全部</v-chip>
-                    <v-chip label color="pink" text-color="white">
+                    <v-chip label @click="filterWork('全部')">全部</v-chip>
+                    <v-chip label color="pink" text-color="white" @click="filterWork('已评审')">
                         已评审
                     </v-chip>
-                    <v-chip label outline color="red">未评审</v-chip>
+                    <v-chip label outline color="red" @click="filterWork('未评审')">未评审</v-chip>
                     <v-card flat>
                         <v-card-text>
-                            <div v-for="i in 4" :key="i">
+                            <div v-for="i in works.length" :key="i">
                                 <v-flex>
                                     <work-item :data="works[i-1]" :router_param_value="works[i-1].workId"></work-item>
                                 </v-flex>
@@ -42,18 +35,18 @@
                 </el-card>
             </v-flex>
         </v-layout>
-       
+
     </v-container>
 </template>
 
 <script>
 import WorkItem from "@/components/work-item-review/index.vue";
+import http_judge from "@/http/judge.js";
 export default {
     data() {
         return {
             dialog: false,
-            lorem: "lorem",
-            activity: {
+            page: {
                 name: "我的评审",
                 describe: "分配的小组:",
                 attend_person: "未上传"
@@ -62,26 +55,25 @@ export default {
                 {
                     title: "作品1",
                     workId: "3",
-                    review: "true",
-                    content: "活动简介",
-                    
+                    review: true,
+                    content: "活动简介"
                 },
                 {
                     title: "作品2",
                     workId: "4",
-                    review: "false",
+                    review: false,
                     content: "活动简介"
                 },
                 {
                     title: "作品3",
                     workId: "2",
-                    review: "true",
+                    review: true,
                     content: "活动简介"
                 },
                 {
                     title: "作品4",
                     workId: "13",
-                    review: "true",
+                    review: true,
                     content: "活动简介"
                 }
             ]
@@ -98,7 +90,27 @@ export default {
         toJudeg() {
             this.$router.push({ name: "judge" });
         },
-        filterWork() {}
+        async filterWork(condition) {
+            await this.getWorks(condition);
+            if (condition === "已评审") {
+                this.works = this.works.filter(item => {
+                    return item.review === true;
+                });
+            } else if (condition === "未评审") {
+                this.works = this.works.filter(item => {
+                    return item.review === false;
+                });
+            }
+        },
+        async getWorks(condition) {
+            try {
+                let data = {};
+                this.works = await http_judge.getWorksByGroup(this, data);
+            } catch (error) {
+                console.log("judge-index", condition);
+                this.works = error;
+            }
+        }
     }
 };
 </script>

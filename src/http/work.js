@@ -1,15 +1,15 @@
-import {base_url} from "./common"
+import { base_url } from "./common"
 const http_work = {}
 
-http_work.getWork = function (Vue,data) {
-    let data = {
-        username: "a",
-        password: "123"
-    };
+/*
+    上传作品信息
+*/
+http_work.getWorks = function (Vue, data) {
     return new Promise((resolve, reject) => {
         Vue.$axios
-            .post("/api/user/login", Vue.$qs.stringify(LoginParam))
+            .post(base_url + "", Vue.$qs.stringify(data))
             .then(result => {
+
                 resolve();
             })
             .catch(err => {
@@ -17,12 +17,16 @@ http_work.getWork = function (Vue,data) {
             });
     });
 }
-http_work.getWorks = function (Vue,data) {
-   
+
+/*
+    上传作品信息
+*/
+http_work.upWork = function (Vue, data) {
     return new Promise((resolve, reject) => {
         Vue.$axios
-            .post("/api/user/login", Vue.$qs.stringify(LoginParam))
+            .post(base_url + "", Vue.$qs.stringify(data))
             .then(result => {
+
                 resolve();
             })
             .catch(err => {
@@ -30,4 +34,53 @@ http_work.getWorks = function (Vue,data) {
             });
     });
 }
+/*
+    修改作品信息
+*/
+http_work.modifyWork = function (Vue, data) {
+    return new Promise((resolve, reject) => {
+        Vue.$axios
+            .post(base_url + "", Vue.$qs.stringify(data))
+            .then(result => {
+
+                resolve();
+            })
+            .catch(err => {
+                reject(err);
+            });
+    });
+}
+/*
+    上传作品附件
+*/
+http_work.upWorkFile = function (Vue, data) {
+    return new Promise((resolve, reject) => {
+        Vue.$axios
+            .post(base_url + "", Vue.$qs.stringify(data))
+            .then(result => {
+
+                resolve();
+            })
+            .catch(err => {
+                reject(err);
+            });
+    });
+}
+/*
+    上传作品附件
+*/
+http_work.upWork = function (Vue, data) {
+    return new Promise((resolve, reject) => {
+        Vue.$axios
+            .post(base_url + "", Vue.$qs.stringify(data))
+            .then(result => {
+
+                resolve();
+            })
+            .catch(err => {
+                reject(err);
+            });
+    });
+}
+
 export default http_work

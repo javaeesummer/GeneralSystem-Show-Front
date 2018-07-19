@@ -21,7 +21,6 @@ export default {
         };
     },
     watch: {
-        // 折叠和展开菜单的时候销毁 better scroll
         "$route.matched": {
             handler(val) {
               
@@ -52,7 +51,7 @@ export default {
     },
     methods: {
         toPage(item) {
-            console.log(item)
+          
             this.$router.push({name:item.router_name})
         }
     }

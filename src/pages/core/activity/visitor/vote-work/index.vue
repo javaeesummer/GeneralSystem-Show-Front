@@ -58,6 +58,8 @@
 
 <script>
 import WorkItemShow from "@/components/work-item-show/index.vue";
+import http_activity from '@/http/activity'
+import http_works from '@/http/work'
 export default {
     components: {
         WorkItemShow

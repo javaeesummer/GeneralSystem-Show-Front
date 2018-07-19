@@ -5,12 +5,14 @@ module.exports = {
         port: 8888,
         https: false,
         hotOnly: false,
-        
         proxy: {
             '/api': {
-                target: '',
+                target: 'http://47.104.236.227:8080/summar',
                 ws: true,
-                // changeOrigin: true,
+                changeOrigin: true,
+                pathRewrite: {
+                    '^/api': '/'
+                }
             },
         },
         before: app => { }
