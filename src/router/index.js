@@ -14,8 +14,8 @@ let router = new VueRouter({ routes: routes })
 router.beforeEach((to, from, next) => {
   // 验证当前路由所有的匹配中是否需要有登陆验证的
   if (to.matched.some(r => r.meta.requiresAuth)) {
-    console.log(Cookie.get("uui2d"))
-    if (Cookie.get("uuid")) {
+    console.log(Cookie.get("userId"))
+    if (Cookie.get("userId")) {
       next();
     } else {
       next({

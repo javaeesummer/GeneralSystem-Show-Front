@@ -1,23 +1,31 @@
 <template>
     <v-container fluid grid-list-md class="main-container">
         <v-layout row justify-center>
-            <v-flex d-flex xs12 sm6 md10>
+            <v-flex d-flex xs12 sm12 md10>
                 <el-card>
                     <v-layout column>
                         <v-flex>
-                            <h2>参赛作品</h2>
+                            <h2>{{activity.activityName}}</h2>
                         </v-flex>
-
                         <v-flex>
-                            <v-icon color="green darken-2">access_time</v-icon>
-                            <span>{{activity_state}}</span>
+                            <span>{{activity.description}}</span>
                         </v-flex>
+                        <v-layout align-center justify-start row>
+                            <v-flex>
+                                <span class="v-icon">
+                                    <v-icon>access_time</v-icon>
+                                    <span class="v-icon-number">投票{{activity_state}}</span>
+
+                                </span>
+                            </v-flex>
+
+                        </v-layout>
                     </v-layout>
                 </el-card>
             </v-flex>
         </v-layout>
         <v-layout row justify-center>
-            <v-flex d-flex xs12 sm6 md8>
+            <v-flex d-flex xs12 sm12 md10>
                 <el-card>
                     <v-layout column wrap>
                         <v-flex>
@@ -50,18 +58,7 @@
                     </v-layout>
                 </el-card>
             </v-flex>
-            <v-flex md2>
-                <el-card>
-                    <v-layout column wrap>
-                        <v-flex>
-                            <h2>专家评委</h2>
-                        </v-flex>
-                        <v-flex>
-                            may not
-                        </v-flex>
-                    </v-layout>
-                </el-card>
-            </v-flex>
+
         </v-layout>
     </v-container>
 
@@ -80,11 +77,19 @@ export default {
     },
     data() {
         return {
+            activity: {
+                activityName: "暂无",
+                description: "暂无",
+                attend_person: 0,
+                startTime: "暂无",
+                activityId: 0,
+                endTime: ""
+            },
             hava_data: false,
             current_page: 1,
             page_size: 10,
             total: 10,
-            activity_state: "进行中",
+            activity_state: "",
             finish: false,
             items: [
                 {
@@ -135,10 +140,39 @@ export default {
         },
         async getActivity() {
             try {
-                let data = {};
-                await http_activity.getActivityById(this, data);
+                let data = {
+                    activityId: this.$route.params.activityId
+                };
+                this.activity = await http_activity.getActivityById(this, data);
+                let state = this.nowState(this.activity);
+                if (state < 0) {
+                    this.activity_state = "未开始";
+                } else if ((state = 0)) {
+                    this.activity_state = "进行中";
+                } else if (state > 0) {
+                    this.activity_state = "已结束";
+                }
             } catch (error) {
                 console.error(error);
+            }
+        },
+        nowState(activity) {
+            if (activity.totalCount === 6) {
+                if (activity.conutStatus < 3) {
+                    return -1;
+                } else if (activity.conutStatus === 3) {
+                    return 0;
+                } else if (activity.conutStatus > 3) {
+                    return 1;
+                }
+            } else if (activity.totalCount === 5) {
+                if (activity.conutStatus < 3) {
+                    return -1;
+                } else if (activity.conutStatus === 3) {
+                    return 0;
+                } else if (activity.conutStatus > 3) {
+                    return 1;
+                }
             }
         }
     }
@@ -151,5 +185,17 @@ export default {
 }
 .no-content {
     height: 200px;
+}
+.v-icon-number {
+    font-size: 12px;
+}
+.v-icon {
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    vertical-align: middle;
 }
 </style>

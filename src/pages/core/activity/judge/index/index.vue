@@ -112,11 +112,9 @@ export default {
         },
         async getWorks(condition) {
             try {
-                // let data = {
-                //     activityId:this.$route.params.activityId,
-                //     group:,
-                //     judgeId:
-                // };
+                let data = {
+                    activityId:this.$route.params.activityId,
+                };
                 this.works = await http_judge.getWorksByGroup(this, data);
             } catch (error) {
                 console.error(error);

@@ -22,9 +22,7 @@
                                 <v-flex xs12>
                                     <v-text-field label="密码" type="password" required v-model="password" :rules="[rules.required,rules.counter]"></v-text-field>
                                 </v-flex>
-                                <v-flex xs12>
-                                    <v-select v-model="defaultType" :items="items" label="请选择用户类型"></v-select>
-                                </v-flex>
+
                                 <v-flex>
                                     <small>*没有账号?</small>
                                     <small class="register" @click="toRegister()">注册</small>
@@ -68,6 +66,12 @@ export default {
             index: 0
         };
     },
+    created() {
+        let userId = Cookie.get("userId");
+        if (userId) {
+            this.$store.commit("saveUserId", userId);
+        }
+    },
     computed: {
         ...mapState({
             config: state => state.config,
@@ -97,30 +101,28 @@ export default {
                 try {
                     let params = {
                         username: this.username,
-                        password: this.password,
-                        usertype: "1"
+                        password: this.password
                     };
-                    let userId = await http_user.login(this, params);
+                    let data = await http_user.login(this, params);
+                    let userId = 57;
 
-                    this.$store.commit("saveLogin", true);
-                    this.$store.commit("saveloginDialog", false);
                     this.$message({
                         showClose: true,
                         message: "登录成功",
                         type: "success"
                     });
-                    this.$store.commit("saveUserId",userId);
+
+                    Cookie.set("userId", userId);
+                    this.$store.commit("saveloginDialog", false);
+                    this.$store.commit("saveUserId", userId);
                 } catch (error) {
                     this.$message.error("请输入正确的账号或密码");
                 }
             } else {
                 this.$message.error("请输入正确的账号或密码");
-                Cookie.set("uuid", "123");
-                this.$store.commit("saveLogin", true);
-                this.$store.commit("saveloginDialog", false);
             }
         },
-        
+
         onScroll(e) {
             let offsetTop =
                 window.pageYOffset || document.documentElement.scrollTop;

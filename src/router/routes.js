@@ -18,7 +18,7 @@ import vote_work_layout from '../pages/core/activity/visitor/layout'
 import vote_work_index from '../pages/core/activity/visitor/vote-work/index'
 import vote_work_onework from "../pages/core/activity/visitor/vote-work-onework/index"
 
-
+import NotFound from '../pages/core/404/index'
 // const alive = true
 const routes = [
     {
@@ -89,7 +89,7 @@ const routes = [
     {
         path: '*',
         name: "404",
-        component: register,
+        component: NotFound,
     },
 
 

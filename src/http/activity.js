@@ -18,11 +18,11 @@ http_activity.getActivitys = function (Vue, data) {
 }
 /*
     通过活动Id获取活动
-    1.活动基本信息
-    2.活动节点
+
 */
 
 http_activity.getActivityById = function (Vue, data) {
+
     return new Promise((resolve, reject) => {
         Vue.$axios
             .post(base_url + "user/getActivityById", Vue.$qs.stringify(data))
@@ -37,12 +37,12 @@ http_activity.getActivityById = function (Vue, data) {
 /*
     通过活动的节点信息
 */
-http_activity.getActivityPointByActivityId = function (Vue, data) {
+http_activity.getActivityNode = function (Vue, data) {
     return new Promise((resolve, reject) => {
         Vue.$axios
             .post(base_url + "user/getActivityNode", Vue.$qs.stringify(data))
             .then(result => {
-                resolve();
+                resolve(result.data);
             })
             .catch(err => {
                 reject(err);

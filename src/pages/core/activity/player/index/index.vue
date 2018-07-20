@@ -1,7 +1,7 @@
 <template>
     <v-container fluid grid-list-md class="main-container">
         <v-layout row justify-center>
-            <v-flex d-flex xs12 sm6 md10>
+            <v-flex d-flex xs12 sm10 md10>
                 <el-card>
                     <v-layout column>
                         <v-flex>
@@ -53,7 +53,7 @@
             </v-card>
         </v-dialog>
         <v-layout row justify-center>
-            <v-flex d-flex xs12 sm6 md10>
+            <v-flex d-flex xs12 sm10 md10>
                 <v-stepper v-model="step" vertical>
                     <v-stepper-step :complete="step > 1" step="1">
                         作品提交阶段
@@ -63,6 +63,7 @@
                         <small>{{workState[state===0?0:1].state_name}}</small>
                         <v-btn color="primary" @click="commitWork()">提交作品</v-btn>
                         <v-btn color="primary" @click="downloadFile()">下载作品测试</v-btn>
+
                     </v-stepper-content>
                     <v-stepper-step :complete="step > 2" step="2">大众评审阶段
                     </v-stepper-step>
@@ -211,8 +212,45 @@ export default {
                 let data = {
                     activityId: this.$route.params.activityId
                 };
-                await http_activity.getActivityPointByActivityId(this, data);
+                await http_activity.getActivityNode(this, data);
+                this.down();
             } catch (error) {}
+        },
+        down() {
+            var xhr = new XMLHttpRequest();
+            var formData = new FormData();
+            formData.append("snNumber", $("#snNumber").val());
+            formData.append("spec", $("#spec").val());
+            formData.append("startCreateDate", $("#startCreateDate").val());
+            formData.append("endCreateDate", $("#endCreateDate").val());
+            formData.append("startActiveDate", $("#startActiveDate").val());
+            formData.append("endActiveDate", $("#endActiveDate").val());
+            formData.append("supplier", $("#supplier").val());
+            formData.append("state", $("#cboDeviceStatus").val());
+            xhr.open(
+                "POST",
+                vpms.ajaxUrl + vpms.manageUserUrl + "exportExcelDevices",
+                true
+            );
+            xhr.setRequestHeader("accessToken", userInfo.accessToken);
+            xhr.responseType = "blob";
+            xhr.onload = function(e) {
+                if (this.status == 200) {
+                    var blob = this.response;
+                    var filename = "设备导出{0}.xlsx".format(
+                        vpms.core.date.format("yyyyMMddhhmmss")
+                    );
+
+                    var a = document.createElement("a");
+                    blob.type = "application/excel";
+                    var url = createObjectURL(blob);
+                    a.href = url;
+                    a.download = filename;
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                }
+            };
+            xhr.send(formData);
         }
     }
 };
