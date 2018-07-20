@@ -6,9 +6,23 @@ const http_player = []
 http_player.getPlayerById = function (Vue, data) {
     return new Promise((resolve, reject) => {
         Vue.$axios
-            .post(base_url + "", Vue.$qs.stringify(data))
+            .post(base_url + "user/getAttendor", Vue.$qs.stringify(data))
             .then(result => {
-                console.log(result)
+                resolve(result.data);
+            })
+            .catch(err => {
+                reject(err);
+            });
+    });
+}
+/*
+    获取参
+*/
+http_player.playUpWork = function (Vue, data) {
+    return new Promise((resolve, reject) => {
+        Vue.$axios
+            .post(base_url + "uploadFileDAate", Vue.$qs.stringify(data))
+            .then(result => {
                 resolve();
             })
             .catch(err => {
@@ -16,5 +30,4 @@ http_player.getPlayerById = function (Vue, data) {
             });
     });
 }
-
 export default http_player

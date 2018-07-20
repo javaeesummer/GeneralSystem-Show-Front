@@ -15,12 +15,11 @@
                                 </span>
                             </v-flex>
                             <v-flex md2>
-                                <span class="v-icon-click" @click="vote()">
-                                    <v-icon>thumb_up_alt</v-icon>
+                                <span class="v-icon-click" @click="vote()" @mouseenter="enter" @mouseleave="leave">
+                                    <v-icon :color="vote_icon_color">thumb_up_alt</v-icon>
                                     <span class="v-icon-number">票数</span>
                                 </span>
                             </v-flex>
-
                         </v-layout>
                         <small>*点击票数即可投票</small>
                     </v-layout>
@@ -51,10 +50,14 @@
 </template>
 
 <script>
+import http_work from "@/http/work";
+import VueStar from "vue-star";
 export default {
+    components: {
+        VueStar
+    },
     data() {
         return {
-          
             activity: {
                 name: "活动标题",
                 describe: "活动描述",
@@ -62,14 +65,45 @@ export default {
                 time: "2017-08-08",
                 activityId: 222
             },
+            vote_icon_color: "red",
             e6: 2
         };
     },
-
-    created() {},
+    created() {
+        this.init();
+    },
     methods: {
-        vote() {
-            // console.log("123");
+        init() {
+            this.getWork();
+        },
+        async getWork() {
+            try {
+                let data = {};
+                let work = await http_work.getWork(this, data);
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        async vote() {
+            try {
+                let data = {};
+                this.$alert("点赞成功", "恭喜", {
+                    confirmButtonText: "确定",
+                    callback: action => {
+                       
+                    }
+                });
+                await http_work.vote(this, data);
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        enter() {
+            this.vote_icon_color = "red";
+            console.log();
+        },
+        leave() {
+            this.vote_icon_color = "undefined";
         }
     }
 };

@@ -6,14 +6,24 @@
                     <div slot="header" class="clearfix">
                         <span class="title">热门活动</span>
                     </div>
-                    <div v-for="o in 4" :key="o" class="text item">
-                        <v-flex ma-2>
-                            <activity-item :data="items[o-1]" :router_param_value="items[o-1].activityId"></activity-item>
-                        </v-flex>
+                    <div v-if="hava_date">
+                        <div v-for="o in items.length" :key="o" class="text item">
+                            <v-flex ma-2>
+                                <activity-item :data="items[o-1]" :router_param_value="items[o-1].activityId"></activity-item>
+                            </v-flex>
+                        </div>
+                        <div class="text-xs-center">
+                            <el-pagination background layout="prev, pager, next" :total="total" :page-size="page_size" @current-change="onPageChange">
+                            </el-pagination>
+                        </div>
                     </div>
-                    <div class="text-xs-center">
-                        <el-pagination background layout="prev, pager, next" :total="total" :page-size="page_size">
-                        </el-pagination>
+                    <div v-else>
+                        <v-layout align-center justify-center column fill-height>
+                            <v-spacer></v-spacer>
+                            <v-flex>
+                                <small>主办方快来发起活动把</small>
+                            </v-flex>
+                        </v-layout>
                     </div>
                 </el-card>
             </v-flex>
@@ -24,23 +34,39 @@
 
 <script>
 import ActivityItem from "@/components/activity-item/index.vue";
-
+import http_activity from "@/http/activity";
 export default {
     components: {
         ActivityItem
     },
     methods: {
-       
         init() {
-            // this.getActivitys();
+            this.getActivity();
         },
-       
+        onPageChange(current_page) {
+            this.current_page = current_page;
+            this.getActivity();
+        },
+        async getActivity() {
+            try {
+                let data = {
+                    pagenum: this.current_page,
+                    pagesize: this.page_size
+                };
+                this.items = await http_activity.getActivitys(this, data);
+                if (this.items.length > 0) {
+                    this.hava_date = true;
+                }
+            } catch (error) {}
+        }
     },
     created() {
         this.init();
     },
     data() {
         return {
+            hava_date: false,
+            current_page: 1,
             page_size: 10,
             total: 15,
             items: [

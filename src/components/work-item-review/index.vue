@@ -22,64 +22,73 @@
         </el-card>
         <v-dialog v-model="dialog" persistent max-width="500px">
             <v-card>
-                <v-card-title>
+                <v-card-title primary-title>
                     <span class="headline">作品评审</span>
                 </v-card-title>
                 <v-card-text>
-                    <v-container grid-list-md>
-                        <v-layout wrap>
-                            <v-flex xs12 sm6 md12>
-                                <v-layout row>
-                                    <v-flex xs4>
-                                        <v-subheader>作品名称</v-subheader>
-                                    </v-flex>
-                                    <v-flex xs8>
-                                        <v-subheader>{{data.title}}</v-subheader>
-                                    </v-flex>
-                                </v-layout>
-                            </v-flex>
-                            <v-flex xs12 sm6 md12>
-                                <v-layout row>
-                                    <v-flex xs4>
-                                        <v-subheader>参赛者</v-subheader>
-                                    </v-flex>
-                                    <v-flex xs8>
-                                        <v-subheader>{{data.workId}}</v-subheader>
-                                    </v-flex>
-                                </v-layout>
-                            </v-flex>
-                            <v-flex xs12 sm6 md12>
-                                <v-layout row>
-                                    <v-flex xs4>
-                                        <v-subheader>作品简介</v-subheader>
-                                    </v-flex>
-                                    <v-flex xs8>
-                                        <v-subheader>{{data.content}}</v-subheader>
-                                    </v-flex>
-                                </v-layout>
-                            </v-flex>
-                            <v-flex xs12 sm6 md12>
-                                <v-layout row>
-                                    <v-flex xs4>
-                                        <v-subheader>作品</v-subheader>
-                                    </v-flex>
-                                    <v-flex xs8>
-                                        <v-subheader>作品</v-subheader>
-                                    </v-flex>
-                                </v-layout>
-                            </v-flex>
-                            <v-flex xs12 sm6 md12>
-                                <v-layout row>
-                                    <v-flex xs4>
-                                        <v-subheader>你的评分</v-subheader>
-                                    </v-flex>
-                                    <v-flex xs8 md6>
-                                      <v-text-field :value="data.grade"  solo ></v-text-field>
-                                    </v-flex>
-                                </v-layout>
-                            </v-flex>
-                        </v-layout>
-                    </v-container>
+
+                    <v-layout wrap>
+                        <v-flex xs12 sm6 md12>
+                            <v-layout row>
+                                <v-flex xs4>
+                                    <v-subheader>作品名称</v-subheader>
+                                </v-flex>
+                                <v-flex xs8>
+                                    <v-subheader>{{data.title}}</v-subheader>
+                                </v-flex>
+                            </v-layout>
+                        </v-flex>
+                        <v-flex xs12 sm6 md12>
+                            <v-layout row>
+                                <v-flex xs4>
+                                    <v-subheader>参赛者编号</v-subheader>
+                                </v-flex>
+                                <v-flex xs8>
+                                    <v-subheader>{{data.workId}}</v-subheader>
+                                </v-flex>
+                            </v-layout>
+                        </v-flex>
+                        <v-flex xs12 sm6 md12>
+                            <v-layout row>
+                                <v-flex xs4>
+                                    <v-subheader>作品简介</v-subheader>
+                                </v-flex>
+                                <v-flex xs8>
+                                    <v-subheader>{{data.content}}</v-subheader>
+                                </v-flex>
+                            </v-layout>
+                        </v-flex>
+                        <v-flex xs12 sm6 md12>
+                            <v-layout row>
+                                <v-flex xs4>
+                                    <v-subheader>作品</v-subheader>
+                                </v-flex>
+                                <v-flex xs8>
+                                    <v-subheader>作品</v-subheader>
+                                </v-flex>
+                            </v-layout>
+                        </v-flex>
+                        <v-flex xs12 sm6 md12>
+                            <v-layout row>
+                                <v-flex xs4>
+                                    <v-subheader>你的评分</v-subheader>
+                                </v-flex>
+                                <v-flex xs8 md6>
+                                    <v-text-field :value="data.grade" solo></v-text-field>
+                                </v-flex>
+                            </v-layout>
+                        </v-flex>
+                        <v-flex xs12 sm6 md12>
+                            <v-layout row>
+                                <v-flex xs4>
+                                    <v-subheader>评语</v-subheader>
+                                </v-flex>
+                                <v-flex xs8 md6>
+                                    <v-text-field :value="data.grade" solo></v-text-field>
+                                </v-flex>
+                            </v-layout>
+                        </v-flex>
+                    </v-layout>
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
@@ -137,6 +146,9 @@ export default {
     position: relative;
     vertical-align: middle;
     cursor: pointer;
+}
+.news__item-title:hover {
+    color: blue;
 }
 .article-excerpt {
     margin-bottom: 10px;

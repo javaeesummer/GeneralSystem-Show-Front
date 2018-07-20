@@ -8,8 +8,9 @@
                             <h2>{{page.name}}</h2>
                         </v-flex>
                         <v-flex>
-                            <span>{{page.describe}}</span>
-                            <span>{{page.describe}}</span>
+                            <span>
+                                你好 {{"asd"}} 评委
+                            </span>
                         </v-flex>
                     </v-layout>
                 </el-card>
@@ -19,10 +20,10 @@
             <v-flex d-flex xs12 sm6 md10>
                 <el-card :body-style="{padding:'10px'}">
                     <v-chip label @click="filterWork('全部')">全部</v-chip>
-                    <v-chip label color="pink" text-color="white" @click="filterWork('已评审')">
+                    <v-chip label color="green darken-1" text-color="white" @click="filterWork('已评审')">
                         已评审
                     </v-chip>
-                    <v-chip label outline color="red" @click="filterWork('未评审')">未评审</v-chip>
+                    <v-chip label color="pink" text-color="white" @click="filterWork('未评审')">未评审</v-chip>
                     <v-card flat>
                         <v-card-text>
                             <div v-for="i in works.length" :key="i">
@@ -82,7 +83,14 @@ export default {
     components: {
         WorkItem
     },
+    created() {
+        this.init();
+    },
     methods: {
+        init() {
+            this.getWorks();
+            this.getJudge();
+        },
         getWork() {},
         toPlayer() {
             this.$router.push({ name: "player" });
@@ -104,11 +112,24 @@ export default {
         },
         async getWorks(condition) {
             try {
-                let data = {};
+                // let data = {
+                //     activityId:this.$route.params.activityId,
+                //     group:,
+                //     judgeId:
+                // };
                 this.works = await http_judge.getWorksByGroup(this, data);
             } catch (error) {
-                console.log("judge-index", condition);
+                console.error(error);
                 this.works = error;
+            }
+        },
+        async getJudge(condition) {
+            try {
+                let data = {};
+                let judge = await http_judge.getJudge(this, data);
+                
+            } catch (error) {
+                console.error(error);
             }
         }
     }

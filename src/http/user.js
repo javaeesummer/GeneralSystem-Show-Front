@@ -1,14 +1,29 @@
-import {base_url} from "./common"
+import { base_url } from "./common"
 let http_user = {}
 /*
     登录
 */
-http_user.login = function (Vue,params) {
+http_user.login = function (Vue, params) {
     return new Promise((resolve, reject) => {
         Vue.$axios
-            .post("/api/user/login", Vue.$qs.stringify(params))
+            .post(base_url + "/user/login", Vue.$qs.stringify(params))
             .then(result => {
-                console.log(result)
+                resolve(result.data);
+            })
+            .catch(err => {
+                reject(err);
+            });
+    });
+}
+/*
+    注册
+*/
+http_user.register = function (Vue, params) {
+    return new Promise((resolve, reject) => {
+        Vue.$axios
+            .post(base_url + "/user/register", Vue.$qs.stringify(params))
+            .then(result => {
+
                 resolve();
             })
             .catch(err => {
@@ -16,5 +31,4 @@ http_user.login = function (Vue,params) {
             });
     });
 }
-
 export default http_user

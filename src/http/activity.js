@@ -6,10 +6,10 @@ const http_activity = {}
 http_activity.getActivitys = function (Vue, data) {
     return new Promise((resolve, reject) => {
         Vue.$axios
-            .post(base_url + "user/getAllActivity", Vue.$qs.stringify(data))
+            .post(base_url + "user/getActivity", Vue.$qs.stringify(data))
             .then(result => {
-                console.log(result)
-                resolve();
+
+                resolve(result.data);
             })
             .catch(err => {
                 reject(err);
@@ -25,9 +25,9 @@ http_activity.getActivitys = function (Vue, data) {
 http_activity.getActivityById = function (Vue, data) {
     return new Promise((resolve, reject) => {
         Vue.$axios
-            .post(base_url + "", Vue.$qs.stringify(data))
+            .post(base_url + "user/getActivityById", Vue.$qs.stringify(data))
             .then(result => {
-                resolve();
+                resolve(result.data);
             })
             .catch(err => {
                 reject(err);
@@ -37,10 +37,10 @@ http_activity.getActivityById = function (Vue, data) {
 /*
     通过活动的节点信息
 */
-http_activity.getActivityPointById = function (Vue, data) {
+http_activity.getActivityPointByActivityId = function (Vue, data) {
     return new Promise((resolve, reject) => {
         Vue.$axios
-            .post(base_url + "", Vue.$qs.stringify(data))
+            .post(base_url + "user/getActivityNode", Vue.$qs.stringify(data))
             .then(result => {
                 resolve();
             })

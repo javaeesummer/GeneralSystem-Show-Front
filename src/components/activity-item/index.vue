@@ -1,37 +1,34 @@
 <template>
     <el-card shadow="never" :body-style="{ padding: '10px' }">
 
-        <span class="news__item-title" @click="to_another_page">{{data.title}}</span>
+        <span class="news__item-title" @click="to_another_page">{{data.activityName}}</span>
         <v-layout column>
             <v-flex>
-                <div class="article-excerpt">{{data.content}}</div>
+                <div class="article-excerpt">{{data.description}}</div>
             </v-flex>
             <v-flex>
                 <v-layout row justify-start align-cente>
                     <v-flex md2 column>
                         <v-layout>
                             <v-icon color="green darken-2">outlined_flag</v-icon>
-                            <div class="article-meta">{{data.sponsorName}} </div>
+                            <div class="article-meta">{{data.hostId}} </div>
                         </v-layout>
                     </v-flex>
                     <v-flex md2 column>
                         <v-layout>
                             <v-icon color="green darken-2">access_time</v-icon>
-                            <div class="article-meta"> {{data.startData}}</div>
+                            <div class="article-meta"> {{data.startTime}} 至 {{data.endTime}}</div>
                         </v-layout>
                     </v-flex>
                     <v-flex md2 column>
                         <v-layout>
                             <v-icon color="green darken-2">people_outline</v-icon>
-                            <div class="article-meta"> {{data.people}}</div>
+                            <div class="article-meta"> {{data.totalCount}}</div>
                         </v-layout>
                     </v-flex>
                 </v-layout>
-
             </v-flex>
-
         </v-layout>
-
     </el-card>
 </template>
 
@@ -41,15 +38,14 @@ export default {
         to_another_page() {
             this.$router.push({
                 name: "activity",
-                params: {"activityId":this.data.activityId}
+                params: { activityId: this.data.activityId }
             });
         }
     },
     props: {
-        data:{
-            type:Object
-        },
-   
+        data: {
+            type: Object
+        }
     }
 };
 </script>

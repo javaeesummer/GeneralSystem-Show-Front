@@ -5,10 +5,10 @@
                 <el-card>
                     <v-layout column>
                         <v-flex>
-                            <h2>{{activity.name}}</h2>
+                            <h2>{{activity.activityName}}</h2>
                         </v-flex>
                         <v-flex>
-                            <span>{{activity.describe}}</span>
+                            <span>{{activity.description}}</span>
                         </v-flex>
                         <v-layout align-center justify-start row>
                             <v-flex md1>
@@ -17,10 +17,12 @@
                                     <span class="v-icon-number">{{activity.attend_person}}</span>
                                 </span>
                             </v-flex>
-                            <v-flex md2>
+                            <v-flex md4>
                                 <span class="v-icon">
                                     <v-icon>access_time</v-icon>
-                                    <span class="v-icon-number">{{activity.time}}</span>
+                                    <span class="v-icon-number">{{activity.startTime}} {{sign}} </span>
+
+                                    <span class="v-icon-number"> {{activity.endTime}}</span>
                                 </span>
                             </v-flex>
                         </v-layout>
@@ -36,14 +38,19 @@
                         <v-stepper v-model="e6" vertical>
                             <v-stepper-step :complete="e6 > 1" step="1">
                                 报名阶段
+                                
                             </v-stepper-step>
                             <v-stepper-content step="1">
-                                <v-card color="grey lighten-3" class="mb-5" height="200px"></v-card>
+                                <small v-if="e6===2">选手请在{{endTime}}前提交作品</small>
+                                <span>开始时间:</span>
+                                <span>{{nodes[0].startTiem}}</span>
+                                <br>
+                                <span>结束时间:</span>
+                                <span>{{nodes[0].endTime}}</span>
                             </v-stepper-content>
                             <v-stepper-step :complete="e6 > 2" step="2">作品提交</v-stepper-step>
                             <v-stepper-content step="2">
-                                <el-card class="box-card">
-                                </el-card>
+                             
                             </v-stepper-content>
                             <v-stepper-step :complete="e6 > 3" step="3"> 大众评审</v-stepper-step>
                             <v-stepper-content step="3">
@@ -52,14 +59,13 @@
                             </v-stepper-content>
                             <v-stepper-step :complete="e6 > 4" step="4"> 专家评审</v-stepper-step>
                             <v-stepper-content step="4">
-                                <v-card color="grey lighten-3" class="mb-5" height="200px"></v-card>
+                                
                                 <!-- <v-btn color="primary" @click="e6 = 1">Continue</v-btn>
                         <v-btn flat>Cancel</v-btn> -->
                             </v-stepper-content>
                             <v-stepper-step :complete="e6 > 5" step="5"> 活动完成</v-stepper-step>
                             <v-stepper-content step="5">
-                                <el-card class="box-card">
-                                </el-card>
+                             
                             </v-stepper-content>
 
                         </v-stepper>
@@ -67,7 +73,7 @@
                 </v-layout>
             </v-flex>
 
-            <v-flex d-flex xs12 sm6 md2 fill-height>
+            <v-flex d-flex xs12 sm2 md2 fill-height>
                 <v-layout column>
                     <v-flex>
                         <el-card>
@@ -104,6 +110,23 @@
                 </v-layout>
             </v-flex>
         </v-layout>
+        <v-dialog v-model="intercept_dialog.dialog_vis" width="500">
+            <v-card>
+                <v-card-title class="headline grey lighten-2" primary-title>
+                    提示
+                </v-card-title>
+                <v-card-text>
+                    请先登录
+                </v-card-text>
+                <v-divider></v-divider>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="primary" flat @click="intercept_dialog.dialog_vis">
+                        I accept
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-container>
 </template>
 
@@ -111,42 +134,59 @@
 import ActivityItem from "@/components/activity-item/index.vue";
 import Cookie from "js-cookie";
 import http_activity from "@/http/activity";
-
 export default {
     data() {
         return {
             activity: {
-                name: "活动标题",
-                describe: "活动描述",
-                attend_person: 123,
-                time: "2017-08-08",
-                activityId: 222
+                activityName: "暂无",
+                description: "暂无",
+                attend_person: 0,
+                startTime: "暂无",
+                activityId: 0,
+                endTime: ""
             },
-            e6: 2
+            sign: " 至 ",
+            e6: 1,
+            endTime: "2017-09",
+            intercept_dialog: {
+                dialog_vis: false
+            },
+            nodes: [{}, {}]
         };
     },
     components: {
         ActivityItem
     },
     created() {
-        this.init()
+        this.init();
     },
     methods: {
+        intercept() {
+            let next = true;
+            if (next) {
+                return true;
+            } else {
+                return false;
+            }
+        },
         toPlayer() {
-            if (Cookie.get("uuid")) {
+            if (this.intercept()) {
                 this.$router.push({
                     name: "player",
                     params: { playerId: 123 }
                 });
+            } else {
+                this.intercept_dialog.dialog_vis = true;
             }
         },
         toJudeg() {
-            if (Cookie.get("uuid")) {
-                console.log;
+            if (this.intercept()) {
                 this.$router.push({
                     name: "judge",
                     params: { judgeId: 123 }
                 });
+            } else {
+                this.intercept_dialog.dialog_vis = true;
             }
         },
         toWork() {
@@ -154,22 +194,26 @@ export default {
                 name: "vote-work-index"
             });
         },
-        async getActivity() {
+        async getActivityById() {
             try {
                 let data = {
-                    activityId:this.$route.params.activityId
+                    activityId: this.$route.params.activityId
                 };
-                await http_activity.getActivityById(this, data);
+                this.activity = await http_activity.getActivityById(this, data);
+                // console.log(activity)
             } catch (error) {}
         },
-        async getActivityPoint() {
+        async getActivityPoints() {
             try {
-                let data = {};
-                await http_activity.getActivityPointById(this, data);
+                let data = {
+                    activityId: this.$route.params.activityId
+                };
+                await http_activity.getActivityPointByActivityId(this, data);
             } catch (error) {}
         },
-        init(){
-
+        init() {
+            this.getActivityById();
+            this.getActivityPoints();
         }
     }
 };
@@ -195,3 +239,4 @@ export default {
     padding-top: 5px;
 }
 </style>
+

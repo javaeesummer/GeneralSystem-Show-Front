@@ -58,5 +58,20 @@ http_judge.upGrade = function (Vue, data) {
             });
     });
 }
+/*
+   获取评委信息
+*/
+http_judge.getJudge = function (Vue, data) {
+    return new Promise((resolve, reject) => {
+        Vue.$axios
+            .post(base_url + "", Vue.$qs.stringify(data))
+            .then(result => {
+                resolve();
+            })
+            .catch(err => {
+                reject(err);
+            });
+    });
+}
 
 export default http_judge

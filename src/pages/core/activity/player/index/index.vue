@@ -38,7 +38,7 @@
                                 <v-text-field label="作品简介" required></v-text-field>
                             </v-flex>
                             <v-flex xs12>
-                                <el-upload ref="upload" action="http://47.104.236.227:8080/summar/uploadFile" :limit="limit" :data="upLoadData" :onError="uploadError" :onSuccess="uploadSuccess">
+                                <el-upload :before-upload="beforeUpload()" ref="upload" action="http://47.104.236.227:8080/summar/uploadFile" :limit="limit" :onError="uploadError" :on-success="onSuccess">
                                     <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
                                 </el-upload>
                             </v-flex>
@@ -48,7 +48,7 @@
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="blue darken-1" flat @click.native="dialog = false">关闭</v-btn>
-                    <v-btn color="blue darken-1" flat @click.native="uploadError()">上传</v-btn>
+                    <v-btn color="blue darken-1" flat @click.native="confirm()">上传</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -62,6 +62,7 @@
                     <v-stepper-content step="1">
                         <small>{{workState[state===0?0:1].state_name}}</small>
                         <v-btn color="primary" @click="commitWork()">提交作品</v-btn>
+                        <v-btn color="primary" @click="downloadFile()">下载作品测试</v-btn>
                     </v-stepper-content>
                     <v-stepper-step :complete="step > 2" step="2">大众评审阶段
                     </v-stepper-step>
@@ -93,9 +94,9 @@ export default {
     data() {
         return {
             upLoadData: {
-                attendorod:"123",
-                description:"123",
-                workname:"asd"
+                attendorod: "123",
+                description: "123",
+                workname: "asd"
             },
             limit: 1,
             dialog: false,
@@ -138,10 +139,31 @@ export default {
                 {
                     state_name: "最终结果"
                 }
-            ]
+            ],
+            test: {
+                attendorid: "123",
+                filepath: "",
+                workname: "asd",
+                filesize: ""
+            }
         };
     },
     methods: {
+        onSuccess(response, file, fileList) {
+            this.test.filepath = response.data.filepath;
+            this.test.filesize = response.data.fileSize;
+        },
+        beforeUpload(file) {
+            // let fd = new FormData();
+            // fd.append("file", file); //传文件
+            // fd.append("workname", "2"); //传其他参数
+            // fd.append("attendorod", "1"); //传其他参数
+            // this.$axios
+            //     .post("http://47.104.236.227:8080/summar/uploadFile", fd)
+            //     .then(function(res) {
+            //         alert("成功");
+            //     });
+        },
         commitWork() {
             this.dialog = true;
         },
@@ -152,21 +174,44 @@ export default {
         uploadError() {},
         init() {
             this.getActivity();
-            this.getPlayer();
+            this.getPlayerById();
         },
         judgeState() {
             //判断当前作品的状态
         },
         async getActivity() {
             try {
-                let data = {};
+                let data = {
+                    activityId: this.$route.params.activityId
+                };
                 let activity = await http_activity.getActivityById(this, data);
             } catch (error) {}
         },
-        async getPlayer() {
+        async getPlayerById() {
             try {
-                let data = {};
+                let data = {
+                    attendorId: this.$route.params.playerId
+                };
                 let player = await http_player.getPlayerById(this, data);
+            } catch (error) {}
+        },
+        confirm() {
+            let data = this.test;
+            http_player.playUpWork(this, data);
+        },
+        downloadFile() {
+            let data = {
+                attendorId: "123",
+                filePath: "/file/2018-07-19/chrome.exe.sig"
+            };
+            http_work.downloadFile(this, data);
+        },
+        async getActivityPoints() {
+            try {
+                let data = {
+                    activityId: this.$route.params.activityId
+                };
+                await http_activity.getActivityPointByActivityId(this, data);
             } catch (error) {}
         }
     }

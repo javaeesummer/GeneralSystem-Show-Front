@@ -1,18 +1,18 @@
 <template>
     <el-card shadow="never" :body-style="{ padding: '10px' }">
         <v-layout row>
-            <v-flex >
+            <v-flex>
                 <v-layout column>
                     <v-flex>
-                        <span class="news__item-title">第{{data.id}}号</span>
-                        <span class="news__item-title" @click="to_another_page">{{data.title}}</span>
+                        <span class="news__item-title" @click="to_another_page">{{data.id}}号</span>
+
+                    </v-flex>
+                    <v-flex>
+
+                        <span class="news__item-subtitle">{{data.title}}</span>
                     </v-flex>
                     <v-flex>
                         <div class="article-excerpt">{{data.describe}}</div>
-                    </v-flex>
-                    <v-flex>
-                        <span class="download">作品下载:</span>
-                        <span download="download-src">{{data.file_name}}</span>
                     </v-flex>
                     <v-flex>
                         <span>票数:</span>
@@ -21,18 +21,8 @@
                 </v-layout>
             </v-flex>
             <v-spacer></v-spacer>
-            <!-- <v-flex md2>
-                <v-layout align-center fill-height>
-                    <v-flex v-if="!finish">
-                        <v-btn large >投票</v-btn>
-                    </v-flex>
-                   
-                </v-layout>
-            </v-flex> -->
         </v-layout>
-
     </el-card>
-
 </template>
 
 <script>
@@ -81,10 +71,13 @@ export default {
     vertical-align: middle;
     margin-right: 10px;
 }
+.news__item-title:hover {
+    color: blue;
+}
 .news__item-subtitle {
     display: inline;
     font-weight: 500;
-    font-size: 18px;
+    font-size: 14px;
     line-height: 28px;
     color: #212121;
     position: relative;
@@ -96,7 +89,6 @@ export default {
 }
 .download-src {
     font-size: 14px;
-
 }
 .article-excerpt {
     /* margin-bottom: 10px; */

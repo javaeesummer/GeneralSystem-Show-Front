@@ -1,12 +1,38 @@
 import db from '@/libs/db.js';
 export default {
     state: {
-       is_login:false,
-       user_type:"admin",
+        is_login: false,
+
+        user_info: {
+            user_id: "",
+            user_type: "",
+            judge_id: "",
+            player_id: "",
+        }
     },
     mutations: {
-        saveLogin(state,is_login){
-            state.is_login=is_login
+        saveUserId(state, user_id) {
+            state.user_info.user_id = user_id
+        },
+        savejudgeId(state, judge_id) {
+            state.user_info.user_type = judge_id
+        },
+        saveplayerId(state, player_id) {
+            state.user_info.player_id = player_id
+        },
+        saveUserType(state, user_type) {
+            state.user_type = user_type
+        },
+        saveLogin(state, is_login) {
+            state.is_login = is_login
+        },
+        clear(state) {
+            state.user_info = {
+                user_id: "",
+                user_type: "",
+                judge_id: "",
+                player_id: "",
+            }
         },
         /**
             * @class 通用工具

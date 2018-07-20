@@ -23,19 +23,30 @@
                         <v-flex>
                             <h2>参赛作品</h2>
                         </v-flex>
-                        <v-flex>
-                            <v-layout column>
-                                <div v-for="item in items" :key="item.workId">
-                                    <v-flex>
-                                        <work-item-show :data="item" :finish="finish" :router_param_value="item.id"></work-item-show>
-                                    </v-flex>
-                                </div>
+                        <div v-if="hava_data">
+                            <v-flex>
+                                <v-layout column>
+                                    <div v-for="item in items" :key="item.workId">
+                                        <v-flex>
+                                            <work-item-show :data="item" :finish="finish" :router_param_value="item.id"></work-item-show>
+                                        </v-flex>
+                                    </div>
+                                </v-layout>
+                            </v-flex>
+                            <v-flex class="text-xs-center">
+                                <el-pagination background layout="prev, pager, next" :total="total" :page-size="page_size" @current-change="onPageChange">
+                                </el-pagination>
+                            </v-flex>
+                        </div>
+                        <div v-else class="no-content">
+                            <v-layout align-center justify-center column fill-height>
+                                <v-spacer></v-spacer>
+                                <v-flex>
+                                    <small>别着急请等选手提交作品</small>
+                                </v-flex>
                             </v-layout>
-                        </v-flex>
-                        <v-flex class="text-xs-center">
-                            <el-pagination background layout="prev, pager, next" :total="total" :page-size="page_size" @prev-click="prev_click" @next-click="next_click">
-                            </el-pagination>
-                        </v-flex>
+
+                        </div>
                     </v-layout>
                 </el-card>
             </v-flex>
@@ -58,22 +69,27 @@
 
 <script>
 import WorkItemShow from "@/components/work-item-show/index.vue";
-import http_activity from '@/http/activity'
-import http_works from '@/http/work'
+import http_activity from "@/http/activity";
+import http_work from "@/http/work";
 export default {
+    created() {
+        this.init();
+    },
     components: {
         WorkItemShow
     },
     data() {
         return {
-            total: 20,
+            hava_data: false,
+            current_page: 1,
             page_size: 10,
+            total: 10,
             activity_state: "进行中",
             finish: false,
             items: [
                 {
                     id: "1",
-                    title: "参赛作品1",
+                    title: "参赛作品名",
                     describe: "描述",
                     workId: "123",
                     file_name: "文件1",
@@ -81,7 +97,7 @@ export default {
                 },
                 {
                     id: "2",
-                    title: "参赛作品3",
+                    title: "参赛作品名",
                     describe: "描述",
                     workId: "124",
                     file_name: "文件1",
@@ -89,7 +105,7 @@ export default {
                 },
                 {
                     id: "3",
-                    title: "参赛作品2",
+                    title: "参赛作品名",
                     describe: "描述",
                     workId: "12",
                     file_name: "文件1",
@@ -99,11 +115,31 @@ export default {
         };
     },
     methods: {
-        prev_click(current_page) {
-            // console.log("current_page", current_page);
+        onPageChange(current_page) {
+            this.current_page = current_page;
         },
-        next_click(current_page) {
-            // console.log("current_page", current_page);
+        init() {
+            this.getWorks();
+            this.getActivity();
+        },
+        async getWorks() {
+            try {
+                let data = {};
+                let works = await http_work.getWorks(this, data);
+                if (works.length > 0) {
+                    this.hava_data = true;
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        async getActivity() {
+            try {
+                let data = {};
+                await http_activity.getActivityById(this, data);
+            } catch (error) {
+                console.error(error);
+            }
         }
     }
 };
@@ -112,5 +148,8 @@ export default {
 <style scoped>
 .main-container {
     padding-top: 5px;
+}
+.no-content {
+    height: 200px;
 }
 </style>

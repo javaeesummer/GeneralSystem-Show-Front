@@ -1,9 +1,9 @@
 <template>
-    <v-toolbar :clipped-left="$vuetify.breakpoint.lgAndUp" color="blue darken-3" dark app fixed>
+    <v-toolbar :clipped-left="$vuetify.breakpoint.lgAndUp" color="blue darken-3" dark app fixed >
         <v-toolbar-title style="width: 300px" class="ml-0 pl-3">
-            <v-toolbar-side-icon @click.stop="config.drawer = !config.drawer"></v-toolbar-side-icon>
+            <!-- <v-toolbar-side-icon @click.stop="config.drawer = !config.drawer"></v-toolbar-side-icon> -->
 
-            <span class="hidden-md-and-down" @click="toHome()">通用系统作品</span>
+            <span  @click="toHome()">通用系统作品</span>
 
         </v-toolbar-title>
         <!-- <v-text-field flat solo-inverted hide-details prepend-inner-icon="search" label="Search" class="hidden-sm-and-down"></v-text-field> -->
@@ -11,7 +11,7 @@
         <!-- <v-btn icon>
             <v-icon>apps</v-icon>
         </v-btn> -->
-        <span @click="filter()" style="cursor:pointer">{{title}}</span>
+        <span @click="filter()" class="action">{{title}}</span>
         <!-- <span v-else @click="loginOut()" style="cursor:pointer">注销</span> -->
         <v-dialog v-model="dialog" max-width="290">
             <v-card>
@@ -54,9 +54,7 @@ export default {
         }
     },
     methods: {
-        handleSelect(key, keyPath) {
-            // console.log(key, keyPath);
-        },
+        handleSelect(key, keyPath) {},
         toHome() {
             this.$router.push({ name: "index" });
         },
@@ -73,17 +71,18 @@ export default {
         loginOut() {
             this.dialog = true;
         },
-        //自闭
         dialog_confirm() {
             this.dialog = false;
             this.$store.commit("saveLogin", false);
-        }
+        },
+       
     },
     data() {
         return {
             dialog: false,
 
-            title: "登录"
+            title: "登录",
+          
         };
     }
 };
@@ -93,5 +92,11 @@ export default {
 <style scoped>
 .hidden-md-and-down {
     cursor: pointer;
+}
+.action {
+    cursor: pointer;
+}
+.action:hover {
+    color: gold;
 }
 </style>
