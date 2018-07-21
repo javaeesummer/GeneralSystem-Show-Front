@@ -94,12 +94,12 @@ export default {
                     attendorId: this.$route.params.workId
                 };
                 let player = await http_player.getPlayerById(this, data);
-                this.attendorId = player.attendorid+"号";
+                this.attendorId = player.attendorid + "号";
                 this.vote_num = player.votenum;
                 this.work = (await http_work.getWork(this, data))[0];
                 this.work.filepath =
                     "http://47.104.236.227:8080/summar/file/downloadFile?attendorid=" +
-                    "123";
+                    this.attendorId;
             } catch (error) {
                 console.error(error);
             }
@@ -171,7 +171,7 @@ export default {
             let vote_node = activity_nodes.find(item => {
                 return item.priority === 3;
             });
-            console.log(activity.conutStatus)
+            console.log(activity.conutStatus);
             //如果有
             if (vote_node) {
                 if (activity.conutStatus < 3) {

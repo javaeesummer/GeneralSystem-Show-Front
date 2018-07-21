@@ -57,7 +57,6 @@ export default {
                 this.items = previewdata.activityBeanViewList;
 
                 if (this.items.length > 0) {
-
                     this.total = previewdata.count;
                     this.hava_date = true;
                     // this.$db.set("activitys", this.items);
@@ -75,8 +74,7 @@ export default {
             current_page: 1,
             page_size: 10,
             total: 15,
-            items: [
-            ]
+            items: []
         };
     }
 };

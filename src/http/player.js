@@ -38,7 +38,11 @@ http_player.playUpWork = function (Vue, data) {
 http_player.getAllPlayer = function (Vue, data) {
     return new Promise((resolve, reject) => {
         Vue.$axios
-            .post(base_url + "judge/showAllAttendor", Vue.$qs.stringify(data))
+            .post(base_url + "judge/showAllAttendor", Vue.$qs.stringify(data),{
+                headers:{
+                    "Content-Type":"application/json"
+                }
+            })
             .then(result => {
                 resolve(result.data);
             })

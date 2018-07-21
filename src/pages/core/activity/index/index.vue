@@ -35,7 +35,7 @@
                 <v-layout column>
                     <v-flex>
                         <v-stepper v-model="step" vertical non-linear>
-                            <v-stepper-step :complete="step > 1" step="1" >
+                            <v-stepper-step :complete="step > 1" step="1">
                                 {{nodes[0].description}}
                             </v-stepper-step>
                             <v-stepper-content step="1">
@@ -60,7 +60,7 @@
                                     <span>{{nodes[1].endTime}}</span>
                                 </div>
                             </v-stepper-content>
-                            <v-stepper-step :complete="step > 3" step="3" >
+                            <v-stepper-step :complete="step > 3" step="3">
                                 {{nodes[2].description}}
                             </v-stepper-step>
                             <v-stepper-content step="3">
@@ -92,7 +92,6 @@
                                     <span>查看结果</span>
                                 </router-link>
                             </v-stepper-content>
-
                         </v-stepper>
                     </v-flex>
                 </v-layout>
@@ -166,6 +165,9 @@ export default {
             can_player: false
         };
     },
+    watch: {
+        
+    },
     components: {
         ActivityItem
     },
@@ -225,6 +227,7 @@ export default {
                 while (this.step < this.activity.conutStatus) {
                     this.step = this.step + 1;
                 }
+
                 this.nodes = await http_activity.getActivityNode(this, data);
                 this.nodes = this.sortNode(this.nodes);
                 this.nodes.forEach(element => {
@@ -235,7 +238,6 @@ export default {
             } catch (error) {
                 console.error("error", error);
             } finally {
-                that.step = 3;
             }
         },
         // async getActivityById() {

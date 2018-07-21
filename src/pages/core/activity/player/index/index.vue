@@ -7,7 +7,7 @@
                         <v-flex>
                             <h2>{{activity.name}}</h2>
                         </v-flex>
-                        
+
                         <v-flex>
                             <span class="v-icon">
                                 <svg version="1.1" role="presentation" width="9.142857142857142" height="9.142857142857142" viewBox="0 0 1024 1024" class="svg-icon active" style="width: 15px; height: 15px; transform: rotate(0deg) scale(1, 1);">
@@ -36,14 +36,15 @@
                                 <v-text-field label="作品简介" required v-model="upLoadData.description"></v-text-field>
                             </v-flex>
                             <v-flex xs12>
-                                <div v-if="btnName==='未上传'">
-                                    <el-upload ref="upload" action="http://47.104.236.227:8080/summar/file/uploadFile" :limit="limit" :onError="uploadError" :on-success="onSuccess">
-                                        <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-                                    </el-upload>
-                                </div>
-                                <div v-else>
-                                    <a :href="worksrc" target="_blank">{{upLoadData.workname}}</a>
-                                 
+                                <div v-if="activity_info.conutStatus===2">
+                                    <div v-if="btnName==='未上传'">
+                                        <el-upload ref="upload" action="http://47.104.236.227:8080/summar/file/uploadFile" :limit="limit" :onError="uploadError" :on-success="onSuccess">
+                                            <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+                                        </el-upload>
+                                    </div>
+                                    <div v-else>
+                                        <a :href="worksrc" target="_blank">{{upLoadData.workname}}</a>
+                                    </div>
                                 </div>
                             </v-flex>
                         </v-layout>
@@ -65,18 +66,21 @@
                     <v-stepper-content step="1">
                         <span>报名成功</span>
                     </v-stepper-content>
-                    <v-stepper-step :complete="step > 2" step="2">
+                    <v-stepper-step :complete="step > 2" step="2" :rules="[rules.have ]">
                         作品提交阶段
+                        <small>未提交</small>
                     </v-stepper-step>
                     <v-stepper-content step="2">
                         <v-btn color="primary" @click="   dialog = true">{{btnName}}</v-btn>
                     </v-stepper-content>
-                    <v-stepper-step :complete="step > 3" step="3">大众评审阶段
+                    <v-stepper-step :complete="step > 3" step="3">
+                        大众评审阶段
                         <span v-if="step>3">"1"</span>
                     </v-stepper-step>
                     <v-stepper-content step="3">
                     </v-stepper-content>
-                    <v-stepper-step :complete="step > 4" step="4">专家评审阶段
+                    <v-stepper-step :complete="step > 4" step="4">
+                        专家评审阶段
                         <small v-if="step>4">"1"</small>
                     </v-stepper-step>
                     <v-stepper-content step="4">
@@ -104,10 +108,19 @@ export default {
             if (val === "已上传") {
                 this.btnName = "查看作品";
             }
+        },
+        step: function(val) {
+            console.log(val);
+            if (val > 2 && this.attend_person === "未上传") {
+                this.step = 2;
+            }
         }
     },
     data() {
         return {
+            rules: {
+                have: value => false
+            },
             btnName: "上传作品",
             upLoadData: {
                 attendorid: this.$route.params.playerId,
@@ -159,7 +172,10 @@ export default {
                     state_name: "最终结果"
                 }
             ],
-            count: 0
+            count: 0,
+            activity_info: {
+                conutStatus: 0
+            }
         };
     },
     methods: {
@@ -214,7 +230,10 @@ export default {
                 let data = {
                     activityId: this.$route.params.activityId
                 };
-                let activity = await http_activity.getActivityById(this, data);
+                this.activity_info = await http_activity.getActivityById(
+                    this,
+                    data
+                );
                 this.step = activity.conutStatus;
 
                 this.nodes = await http_activity.getActivityNode(this, data);

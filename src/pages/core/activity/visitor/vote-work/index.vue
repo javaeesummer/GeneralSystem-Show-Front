@@ -125,7 +125,6 @@ export default {
                     http_activity.getActivityById(this, data),
                     http_activity.getActivityNode(this, data)
                 ]);
-
                 this.nowState(this.activity, activity_nodes);
             } catch (error) {}
         },
@@ -133,6 +132,7 @@ export default {
             let vote_node = activity_nodes.find(item => {
                 return item.priority === 3;
             });
+            console.log("vote_node",vote_node)
             if (vote_node) {
                 if (activity.conutStatus < 3) {
                     this.activity_state = "未开始";
