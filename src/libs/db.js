@@ -5,11 +5,8 @@ const adapter = new LocalStorage('reviewSystem-Front')
 const db = low(adapter)
 
 db.defaults({
-    themeActiveName: [],
-    pageOpenedList: [],
-    updateNotify: [],
     username: [],
-    
+    activity: [],
 }).write()
 
 export default db

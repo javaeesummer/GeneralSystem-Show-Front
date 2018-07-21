@@ -104,25 +104,28 @@ export default {
                         password: this.password
                     };
                     let data = await http_user.login(this, params);
-                    let userId = 57;
-
-                    this.$message({
-                        showClose: true,
-                        message: "登录成功",
-                        type: "success"
-                    });
-
-                    Cookie.set("userId", userId);
-                    this.$store.commit("saveloginDialog", false);
-                    this.$store.commit("saveUserId", userId);
+                    
+                    if (data.hostid) {
+                        this.$message.error("请输入正确的账号或密码");
+                    } else {
+                      
+                        this.$message({
+                            showClose: true,
+                            message: "登录成功",
+                            type: "success"
+                        });
+                        Cookie.set("userId", data.userid);
+                        this.$store.commit("saveloginDialog", false);
+                        this.$store.commit("saveUserId", data.userid);
+                    }
                 } catch (error) {
+                    console.error(error)
                     this.$message.error("请输入正确的账号或密码");
                 }
             } else {
                 this.$message.error("请输入正确的账号或密码");
             }
         },
-
         onScroll(e) {
             let offsetTop =
                 window.pageYOffset || document.documentElement.scrollTop;
@@ -136,7 +139,6 @@ export default {
             if (this.index > 10) {
                 this.index = 0;
             }
-            // console.log(this.index, this.offsetTops);
         }
     }
 };

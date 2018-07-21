@@ -10,20 +10,20 @@
                 <v-layout row justify-start align-cente>
                     <v-flex md2 column>
                         <v-layout>
-                            <v-icon color="green darken-2">outlined_flag</v-icon>
+                            <v-icon color="">outlined_flag</v-icon>
                             <div class="article-meta">{{data.hostId}} </div>
                         </v-layout>
                     </v-flex>
                     <v-flex md2 column>
                         <v-layout>
-                            <v-icon color="green darken-2">access_time</v-icon>
+                            <v-icon color=" ">access_time</v-icon>
                             <div class="article-meta"> {{data.startTime}} 至 {{data.endTime}}</div>
                         </v-layout>
                     </v-flex>
                     <v-flex md2 column>
                         <v-layout>
-                            <v-icon color="green darken-2">people_outline</v-icon>
-                            <div class="article-meta"> {{data.totalCount}}</div>
+                            <v-icon color=" ">people_outline</v-icon>
+                            <div class="article-meta"> {{data.count}}</div>
                         </v-layout>
                     </v-flex>
                 </v-layout>

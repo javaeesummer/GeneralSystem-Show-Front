@@ -5,19 +5,19 @@
                 <el-card>
                     <v-layout column>
                         <v-flex>
-                            <h2>作品标题</h2>
+                            <h2>{{work.workname}}</h2>
                         </v-flex>
                         <v-layout align-center justify-start row>
                             <v-flex md1>
                                 <span class="v-icon">
                                     <v-icon>person</v-icon>
-                                    <span class="v-icon-number">作者</span>
+                                    <span class="v-icon-number">{{attendorId}}</span>
                                 </span>
                             </v-flex>
                             <v-flex md2>
                                 <span class="v-icon-click" @click="vote()" @mouseenter="enter" @mouseleave="leave">
                                     <v-icon :color="vote_icon_color">thumb_up_alt</v-icon>
-                                    <span class="v-icon-number">票数</span>
+                                    <span class="v-icon-number">{{vote_num}}</span>
                                 </span>
                             </v-flex>
                         </v-layout>
@@ -34,13 +34,13 @@
                             <h2>作品介绍</h2>
                         </v-flex>
                         <v-flex class="content">
-                            作品介绍
+                            {{work.description}}
                         </v-flex>
                         <v-flex>
                             <h2>下载地址</h2>
                         </v-flex>
                         <v-flex>
-                            <a>作品名字</a>
+                            <a :href="work.filepath" target="_blank">作品名字</a>
                         </v-flex>
                     </v-layout>
                 </el-card>
@@ -51,6 +51,8 @@
 
 <script>
 import http_work from "@/http/work";
+import http_activity from "@/http/activity";
+import http_player from "@/http/player";
 import VueStar from "vue-star";
 export default {
     components: {
@@ -58,6 +60,7 @@ export default {
     },
     data() {
         return {
+            can_vote: true,
             activity: {
                 name: "活动标题",
                 describe: "活动描述",
@@ -65,8 +68,16 @@ export default {
                 time: "2017-08-08",
                 activityId: 222
             },
-            vote_icon_color: "red",
-            e6: 2
+            vote_icon_color: "",
+            e6: 2,
+            attendorId: "",
+            vote_num: 0,
+            work: {
+                workname: "",
+                worksid: "",
+                description: "作品介绍",
+                filepath: ""
+            }
         };
     },
     created() {
@@ -74,36 +85,107 @@ export default {
     },
     methods: {
         init() {
-            this.getWork();
+            this.getPageInfo();
+            this.getActivityInfo();
         },
-        async getWork() {
+        async getPageInfo() {
             try {
-                let data = {};
-                let work = await http_work.getWork(this, data);
+                let data = {
+                    attendorId: this.$route.params.workId
+                };
+                let player = await http_player.getPlayerById(this, data);
+                this.attendorId = player.attendorid+"号";
+                this.vote_num = player.votenum;
+                this.work = (await http_work.getWork(this, data))[0];
+                this.work.filepath =
+                    "http://47.104.236.227:8080/summar/file/downloadFile?attendorid=" +
+                    "123";
             } catch (error) {
                 console.error(error);
             }
         },
+
         async vote() {
-            try {
-                let data = {};
-                this.$alert("点赞成功", "恭喜", {
-                    confirmButtonText: "确定",
-                    callback: action => {
-                       
+            if (this.can_vote === true) {
+                try {
+                    let data = {
+                        attendorId: this.$route.params.workId,
+                        activityId: this.$route.params.activityId
+                    };
+                    let suceess = await http_work.vote(this, data);
+
+                    if (suceess) {
+                        this.$alert("点赞成功", "恭喜", {
+                            confirmButtonText: "确定",
+                            callback: action => {}
+                        });
+                        this.can_vote = false;
+                        this.vote_icon_color = "red";
+                    } else {
+                        this.$alert("服务器出错", "抱歉", {
+                            confirmButtonText: "确定",
+                            callback: action => {}
+                        });
                     }
+                } catch (error) {
+                    console.error(error);
+                    this.$alert("服务器出错", "抱歉", {
+                        confirmButtonText: "确定",
+                        callback: action => {}
+                    });
+                } finally {
+                    await this.getPageInfo();
+                }
+            } else {
+                this.$alert("不能投票", "抱歉", {
+                    confirmButtonText: "确定",
+                    callback: action => {}
                 });
-                await http_work.vote(this, data);
-            } catch (error) {
-                console.error(error);
             }
         },
+
         enter() {
             this.vote_icon_color = "red";
-            console.log();
         },
         leave() {
-            this.vote_icon_color = "undefined";
+            if (this.can_vote === true) {
+                this.vote_icon_color = "undefined";
+            }
+        },
+        async getActivityInfo() {
+            try {
+                let data = {
+                    activityId: this.$route.params.activityId
+                };
+                let activity;
+                let activity_nodes;
+                [activity, activity_nodes] = await Promise.all([
+                    http_activity.getActivityById(this, data),
+                    http_activity.getActivityNode(this, data)
+                ]);
+                this.nowState(activity, activity_nodes);
+            } catch (error) {}
+        },
+        nowState(activity, activity_nodes) {
+            //找到投票节点
+            let vote_node = activity_nodes.find(item => {
+                return item.priority === 3;
+            });
+            console.log(activity.conutStatus)
+            //如果有
+            if (vote_node) {
+                if (activity.conutStatus < 3) {
+                    this.can_vote = false;
+                } else if (activity.conutStatus === 3) {
+                    this.can_vote = true;
+                } else if (activity.conutStatus > 3) {
+                    this.can_vote = false;
+                }
+            } else {
+                this.$route.push({
+                    name: "404"
+                });
+            }
         }
     }
 };

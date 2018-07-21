@@ -10,16 +10,14 @@
                         <v-flex>
                             <span>{{activity.description}}</span>
                         </v-flex>
-                        <v-layout align-center justify-start row>
+                        <!-- <v-layout align-center justify-start row>
                             <v-flex>
                                 <span class="v-icon">
                                     <v-icon>access_time</v-icon>
                                     <span class="v-icon-number">投票{{activity_state}}</span>
-
                                 </span>
                             </v-flex>
-
-                        </v-layout>
+                        </v-layout> -->
                     </v-layout>
                 </el-card>
             </v-flex>
@@ -31,7 +29,7 @@
                         <v-flex>
                             <h2>优秀作品</h2>
                         </v-flex>
-                        <div >
+                        <div>
                             <v-flex>
                                 <v-layout column>
                                     <div v-for="item in items" :key="item.workId">
@@ -49,7 +47,6 @@
                     </v-layout>
                 </el-card>
             </v-flex>
-
         </v-layout>
     </v-container>
 
@@ -122,7 +119,7 @@ export default {
             try {
                 let data = {};
                 let works = await http_work.getWorks(this, data);
-                if (works.length > 0) {
+                if (works) {
                     this.hava_data = true;
                 }
             } catch (error) {

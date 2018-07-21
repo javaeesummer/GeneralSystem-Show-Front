@@ -27,6 +27,7 @@ http_activity.getActivityById = function (Vue, data) {
         Vue.$axios
             .post(base_url + "user/getActivityById", Vue.$qs.stringify(data))
             .then(result => {
+               
                 resolve(result.data);
             })
             .catch(err => {
@@ -41,6 +42,22 @@ http_activity.getActivityNode = function (Vue, data) {
     return new Promise((resolve, reject) => {
         Vue.$axios
             .post(base_url + "user/getActivityNode", Vue.$qs.stringify(data))
+            .then(result => {
+                resolve(result.data);
+            })
+            .catch(err => {
+                reject(err);
+            });
+    });
+}
+
+/*
+    通过活动参赛者
+*/
+http_activity.getPlayerByActivity = function (Vue, data) {
+    return new Promise((resolve, reject) => {
+        Vue.$axios
+            .post(base_url + "judge/getAttendorList", Vue.$qs.stringify(data))
             .then(result => {
                 resolve(result.data);
             })

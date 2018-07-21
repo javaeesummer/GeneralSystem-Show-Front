@@ -15,7 +15,7 @@
                                 <svg version="1.1" role="presentation" width="9.142857142857142" height="9.142857142857142" viewBox="0 0 1024 1024" class="svg-icon active" style="width: 15px; height: 15px; transform: rotate(0deg) scale(1, 1);">
                                     <path d="M987.428571 369.714286q0 12.571429-14.857143 27.428571l-207.428571 202.285714 49.142857 285.714286q0.571429 4 0.571429 11.428571 0 12-6 20.285714t-17.428571 8.285714q-10.857143 0-22.857143-6.857143l-256.571429-134.857143-256.571429 134.857143q-12.571429 6.857143-22.857143 6.857143-12 0-18-8.285714t-6-20.285714q0-3.428571 1.142857-11.428571l49.142857-285.714286-208-202.285714q-14.285714-15.428571-14.285714-27.428571 0-21.142857 32-26.285714l286.857143-41.714286 128.571429-260q10.857143-23.428571 28-23.428571t28 23.428571l128.571429 260 286.857143 41.714286q32 5.142857 32 26.285714z" stroke="transparent"></path>
                                 </svg>
-                                <span class="v-icon-number">{{activity.attend_person}}</span>
+                                <span class="v-icon-number">{{attend_person}}</span>
                             </span>
                         </v-flex>
                     </v-layout>
@@ -32,13 +32,13 @@
                     <v-container grid-list-md>
                         <v-layout wrap>
                             <v-flex xs12>
-                                <v-text-field label="作品名" required></v-text-field>
+                                <v-text-field label="作品名" required v-model="upLoadData.workname"></v-text-field>
                             </v-flex>
                             <v-flex xs12>
-                                <v-text-field label="作品简介" required></v-text-field>
+                                <v-text-field label="作品简介" required v-model="upLoadData.description"></v-text-field>
                             </v-flex>
                             <v-flex xs12>
-                                <el-upload :before-upload="beforeUpload()" ref="upload" action="http://47.104.236.227:8080/summar/uploadFile" :limit="limit" :onError="uploadError" :on-success="onSuccess">
+                                <el-upload   ref="upload" action="http://47.104.236.227:8080/summar/file/uploadFile" :limit="limit" :onError="uploadError" :on-success="onSuccess">
                                     <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
                                 </el-upload>
                             </v-flex>
@@ -56,26 +56,29 @@
             <v-flex d-flex xs12 sm10 md10>
                 <v-stepper v-model="step" vertical>
                     <v-stepper-step :complete="step > 1" step="1">
-                        作品提交阶段
-
+                        报名阶段
                     </v-stepper-step>
                     <v-stepper-content step="1">
-                        <small>{{workState[state===0?0:1].state_name}}</small>
-                        <v-btn color="primary" @click="commitWork()">提交作品</v-btn>
-                        <v-btn color="primary" @click="downloadFile()">下载作品测试</v-btn>
-
+                        <span>报名成功</span>
                     </v-stepper-content>
-                    <v-stepper-step :complete="step > 2" step="2">大众评审阶段
+                    <v-stepper-step :complete="step > 2" step="2">
+                        作品提交阶段
                     </v-stepper-step>
                     <v-stepper-content step="2">
-                        <small>{{workState[state===2?2:3].state_name}}</small>
+                        <v-btn color="primary" @click="   dialog = true">{{btnName}}</v-btn>
                     </v-stepper-content>
-                    <v-stepper-step :complete="step > 3" step="3">专家评审阶段</v-stepper-step>
+                    <v-stepper-step :complete="step > 3" step="3">大众评审阶段
+                        <span v-if="step>3">"1"</span>
+                    </v-stepper-step>
                     <v-stepper-content step="3">
-                        <small>{{workState[state===4?4:5].state_name}}</small>
                     </v-stepper-content>
-                    <v-stepper-step step="4">最终结果</v-stepper-step>
+                    <v-stepper-step :complete="step > 4" step="4">专家评审阶段
+                        <small v-if="step>4">"1"</small>
+                    </v-stepper-step>
                     <v-stepper-content step="4">
+                    </v-stepper-content>
+                    <v-stepper-step step="5">最终结果</v-stepper-step>
+                    <v-stepper-content step="5">
                         <small>{{workState[state].state_name}}</small>
                     </v-stepper-content>
                 </v-stepper>
@@ -92,20 +95,30 @@ export default {
     created() {
         this.init();
     },
+    watch: {
+        attend_person: function(val) {
+            if (val === "已上传") {
+                this.btnName = "查看作品";
+            }
+        }
+    },
     data() {
         return {
+            btnName: "上传作品",
             upLoadData: {
-                attendorod: "123",
-                description: "123",
-                workname: "asd"
+                attendorid: this.$route.params.playerId,
+                workname: "",
+                description: "",
+                filepath: "",
+                filesize: ""
             },
             limit: 1,
             dialog: false,
             activity: {
-                name: "我的作品",
-                describe: "作品描述",
-                attend_person: "未上传"
+                name: "参赛者主页",
+                describe: "作品描述"
             },
+            attend_person: "未上传",
             step: 0,
             /*
             我的作品状态
@@ -141,52 +154,26 @@ export default {
                     state_name: "最终结果"
                 }
             ],
-            test: {
-                attendorid: "123",
-                filepath: "",
-                workname: "asd",
-                filesize: ""
-            }
+            count: 0
         };
     },
     methods: {
+        init() {
+            this.getPageInfo();
+            this.getPlayerById();
+            this.getWork();
+        },
         onSuccess(response, file, fileList) {
-            this.test.filepath = response.data.filepath;
-            this.test.filesize = response.data.fileSize;
+            this.upLoadData.filepath = response.data.filepath;
+            this.upLoadData.filesize = response.data.fileSize;
         },
-        beforeUpload(file) {
-            // let fd = new FormData();
-            // fd.append("file", file); //传文件
-            // fd.append("workname", "2"); //传其他参数
-            // fd.append("attendorod", "1"); //传其他参数
-            // this.$axios
-            //     .post("http://47.104.236.227:8080/summar/uploadFile", fd)
-            //     .then(function(res) {
-            //         alert("成功");
-            //     });
-        },
-        commitWork() {
-            this.dialog = true;
+        uploadError() {
+            this.$message.error("上传失败");
         },
         submitUpload() {
+            this.upLoadData.attendorod = this.$route.params.attendorId;
+
             this.$refs.upload.submit();
-        },
-        uploadSuccess() {},
-        uploadError() {},
-        init() {
-            this.getActivity();
-            this.getPlayerById();
-        },
-        judgeState() {
-            //判断当前作品的状态
-        },
-        async getActivity() {
-            try {
-                let data = {
-                    activityId: this.$route.params.activityId
-                };
-                let activity = await http_activity.getActivityById(this, data);
-            } catch (error) {}
         },
         async getPlayerById() {
             try {
@@ -194,11 +181,77 @@ export default {
                     attendorId: this.$route.params.playerId
                 };
                 let player = await http_player.getPlayerById(this, data);
-            } catch (error) {}
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        async getWork() {
+            try {
+                let data = {
+                    attendorId: this.$route.params.playerId
+                };
+                let work = await http_work.getWork(this, data);
+
+                if (work.length > 0) {
+                    this.upLoadData = work[0];
+                    this.attend_person = "已上传";
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        async getPageInfo() {
+            try {
+                let that = this;
+                let data = {
+                    activityId: this.$route.params.activityId
+                };
+                let activity = await http_activity.getActivityById(this, data);
+                this.step = activity.conutStatus;
+
+                this.nodes = await http_activity.getActivityNode(this, data);
+                this.nodes = this.sortNode(this.nodes);
+                this.nodes.forEach(element => {
+                    element.startTime = that.fmtDate(element.startTime);
+                    element.endTime = that.fmtDate(element.endTime);
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        sortNode(data) {
+            function sequence(a, b) {
+                if (a.priority > b.priority) {
+                    return 1;
+                } else if (a.priority < b.priority) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            }
+            return data.sort(sequence);
         },
         confirm() {
-            let data = this.test;
-            http_player.playUpWork(this, data);
+            this.upWork();
+        },
+        async upWork() {
+            const loading = this.$loading({
+                lock: true,
+                text: "上传中",
+                spinner: "el-icon-loading",
+                background: "rgba(0, 0, 0, 0.7)"
+            });
+            try {
+                let data = this.upLoadData;
+                http_player.playUpWork(this, data);
+                this.dialog = false;
+            } catch (error) {
+                console.error(error);
+                this.$message.error(error);
+            } finally {
+                await this.getWork();
+                loading.close();
+            }
         },
         downloadFile() {
             let data = {
@@ -207,50 +260,18 @@ export default {
             };
             http_work.downloadFile(this, data);
         },
-        async getActivityPoints() {
-            try {
-                let data = {
-                    activityId: this.$route.params.activityId
-                };
-                await http_activity.getActivityNode(this, data);
-                this.down();
-            } catch (error) {}
-        },
-        down() {
-            var xhr = new XMLHttpRequest();
-            var formData = new FormData();
-            formData.append("snNumber", $("#snNumber").val());
-            formData.append("spec", $("#spec").val());
-            formData.append("startCreateDate", $("#startCreateDate").val());
-            formData.append("endCreateDate", $("#endCreateDate").val());
-            formData.append("startActiveDate", $("#startActiveDate").val());
-            formData.append("endActiveDate", $("#endActiveDate").val());
-            formData.append("supplier", $("#supplier").val());
-            formData.append("state", $("#cboDeviceStatus").val());
-            xhr.open(
-                "POST",
-                vpms.ajaxUrl + vpms.manageUserUrl + "exportExcelDevices",
-                true
+        fmtDate(obj) {
+            var date = new Date(obj);
+            var y = 1900 + date.getYear();
+            var m = "0" + (date.getMonth() + 1);
+            var d = "0" + date.getDate();
+            return (
+                y +
+                "-" +
+                m.substring(m.length - 2, m.length) +
+                "-" +
+                d.substring(d.length - 2, d.length)
             );
-            xhr.setRequestHeader("accessToken", userInfo.accessToken);
-            xhr.responseType = "blob";
-            xhr.onload = function(e) {
-                if (this.status == 200) {
-                    var blob = this.response;
-                    var filename = "设备导出{0}.xlsx".format(
-                        vpms.core.date.format("yyyyMMddhhmmss")
-                    );
-
-                    var a = document.createElement("a");
-                    blob.type = "application/excel";
-                    var url = createObjectURL(blob);
-                    a.href = url;
-                    a.download = filename;
-                    a.click();
-                    window.URL.revokeObjectURL(url);
-                }
-            };
-            xhr.send(formData);
         }
     }
 };

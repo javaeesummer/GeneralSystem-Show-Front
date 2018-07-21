@@ -9,8 +9,8 @@ http_user.login = function (Vue, params) {
             .post(base_url + "user/login", Vue.$qs.stringify(params))
             .then(result => {
 
-                // resolve(result.data);
-                resolve()
+                resolve(result.data);
+                // resolve()
             })
             .catch(err => {
                 reject(err);
@@ -25,8 +25,7 @@ http_user.register = function (Vue, params) {
         Vue.$axios
             .post(base_url + "user/register", Vue.$qs.stringify(params))
             .then(result => {
-
-                resolve();
+                resolve(result.data);
             })
             .catch(err => {
                 reject(err);
@@ -41,6 +40,22 @@ http_user.getUserInfo = function (Vue, params) {
     return new Promise((resolve, reject) => {
         Vue.$axios
             .post(base_url + "judge/getUserInfo", Vue.$qs.stringify(params))
+            .then(result => {
+                resolve(result.data);
+            })
+            .catch(err => {
+                reject(err);
+            });
+    });
+}
+
+/*
+    用户注册成参赛者
+*/
+http_user.registerPlayer = function (Vue, data) {
+    return new Promise((resolve, reject) => {
+        Vue.$axios
+            .post(base_url + "user/registerAttendor", Vue.$qs.stringify(data))
             .then(result => {
                 resolve(result.data);
             })

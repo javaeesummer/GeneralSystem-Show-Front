@@ -4,19 +4,17 @@
             <v-flex>
                 <v-layout column>
                     <v-flex>
-                        <span class="news__item-title" @click="to_another_page">{{data.id}}号</span>
-
+                        <span class="news__item-title" @click="to_another_page">{{data.attendorId}}号</span>
                     </v-flex>
                     <v-flex>
-
-                        <span class="news__item-subtitle">{{data.title}}</span>
+                        <span class="news__item-subtitle">{{data.workname}}</span>
                     </v-flex>
                     <v-flex>
-                        <div class="article-excerpt">{{data.describe}}</div>
+                        <div class="article-excerpt">{{data.description}}</div>
                     </v-flex>
                     <v-flex>
                         <span>票数:</span>
-                        <span>{{data.vote_number}}</span>
+                        <span>{{data.votenum}}</span>
                     </v-flex>
                 </v-layout>
             </v-flex>
@@ -49,7 +47,7 @@ export default {
             default: "workId"
         },
         router_param_value: {
-            type: String,
+            type: Number,
             default: "123"
         },
         router_name: {

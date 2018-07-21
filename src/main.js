@@ -8,7 +8,7 @@ import qs from 'qs'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
-
+import db from '@/libs/db'
 // 路由
 import router from './router/index.js'
 // 框架内的路由
@@ -17,7 +17,7 @@ Vue.use(ElementUI)
 Vue.config.productionTip = false
 
 
-
+Vue.prototype.$db = db
 Vue.prototype.$qs = qs
 Vue.prototype.$store = store
 new Vue({

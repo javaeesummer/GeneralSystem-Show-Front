@@ -2,12 +2,8 @@
     <div>
         <el-card shadow="never" :body-style="{ padding: '10px' }">
 
-            <span class="news__item-title" @click="to_another_page">{{data.title}}</span>
+            <span class="news__item-title" @click="openDialog()">{{data.title}}</span>
             <v-layout column>
-
-                <v-flex>
-                    <div class="article-excerpt">{{data.content}}</div>
-                </v-flex>
                 <v-flex>
                     <v-chip label color="green" text-color="white" small v-if="data.review===true">
                         <v-icon left v-if="data.review">label</v-icon>已评审
@@ -15,10 +11,8 @@
                     <v-chip label color="pink" text-color="white" small v-else>
                         <v-icon left v-if="data.review">label</v-icon>未评审
                     </v-chip>
-
                 </v-flex>
             </v-layout>
-
         </el-card>
         <v-dialog v-model="dialog" persistent max-width="500px">
             <v-card>
@@ -26,7 +20,6 @@
                     <span class="headline">作品评审</span>
                 </v-card-title>
                 <v-card-text>
-
                     <v-layout wrap>
                         <v-flex xs12 sm6 md12>
                             <v-layout row>
@@ -34,7 +27,7 @@
                                     <v-subheader>作品名称</v-subheader>
                                 </v-flex>
                                 <v-flex xs8>
-                                    <v-subheader>{{data.title}}</v-subheader>
+                                    <v-subheader>{{openview.workname}}</v-subheader>
                                 </v-flex>
                             </v-layout>
                         </v-flex>
@@ -44,7 +37,7 @@
                                     <v-subheader>参赛者编号</v-subheader>
                                 </v-flex>
                                 <v-flex xs8>
-                                    <v-subheader>{{data.workId}}</v-subheader>
+                                    <v-subheader>{{openview.attendorid}}</v-subheader>
                                 </v-flex>
                             </v-layout>
                         </v-flex>
@@ -54,7 +47,7 @@
                                     <v-subheader>作品简介</v-subheader>
                                 </v-flex>
                                 <v-flex xs8>
-                                    <v-subheader>{{data.content}}</v-subheader>
+                                    <v-subheader>{{openview.description}}</v-subheader>
                                 </v-flex>
                             </v-layout>
                         </v-flex>
@@ -74,7 +67,7 @@
                                     <v-subheader>你的评分</v-subheader>
                                 </v-flex>
                                 <v-flex xs8 md6>
-                                    <v-text-field :value="data.grade" solo></v-text-field>
+                                    <v-text-field :value="openview.result" solo></v-text-field>
                                 </v-flex>
                             </v-layout>
                         </v-flex>
@@ -84,7 +77,7 @@
                                     <v-subheader>评语</v-subheader>
                                 </v-flex>
                                 <v-flex xs8 md6>
-                                    <v-text-field :value="data.grade" solo></v-text-field>
+                                    <v-textarea :value="openview.advice" solo></v-textarea>
                                 </v-flex>
                             </v-layout>
                         </v-flex>
@@ -93,7 +86,7 @@
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="blue darken-1" flat @click.native="dialog = false">关闭</v-btn>
-                    <v-btn color="blue darken-1" flat @click.native="upGrade">提交</v-btn>
+                    <v-btn color="blue darken-1" flat @click.native="upGrade()">提交</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -102,13 +95,60 @@
 </template>
 
 <script>
+import http_judege from "@/http/judge";
 export default {
     methods: {
-        to_another_page() {
-            this.dialog = true;
-        },
         upGrade() {
-            this.dialog = false;
+            this.up();
+        },
+        openDialog() {
+            this.dialog = true;
+            this.openReview();
+        },
+
+        async openReview() {
+            try {
+                // let data={
+                //     attendorId:,
+                //     judgeId:
+                // }
+                let mydata = {
+                    attendorId: this.player_id,
+                    judgeId: this.$route.params.judgeId
+                };
+                this.openview = await http_judege.openReview(this, mydata);
+                console.log("1", this.openview);
+                console.log("2", this.openview.description);
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        async up() {
+            const loading = this.$loading({
+                lock: true,
+                text: "上传中",
+                spinner: "el-icon-loading",
+                background: "rgba(0, 0, 0, 0.7)"
+            });
+            try {
+                let mydata = {
+                    reviewId: this.openview.reviewid,
+                    attendorId: this.openview.attendorid,
+                    result: this.openview.result,
+                    advice: this.openview.advice,
+                    judgeId: this.$route.params.judgeId
+                };
+                let success = await http_judege.modifyView(this, mydata);
+                if (success) {
+                    this.$message.success("修改成功");
+                } else {
+                    this.$message.error("修改失败");
+                }
+            } catch (error) {
+                console.error(error);
+            } finally {
+                loading.close();
+            }
         }
     },
     props: {
@@ -126,11 +166,22 @@ export default {
         router_name: {
             type: String,
             default: "review-work"
+        },
+        player_id: {
+            type: Number
         }
     },
     data() {
         return {
-            dialog: false
+            dialog: false,
+            openview: {
+                advice: "",
+                description: "",
+                attendorid: "",
+                result: "",
+                reviewid: "",
+                workname: ""
+            }
         };
     }
 };

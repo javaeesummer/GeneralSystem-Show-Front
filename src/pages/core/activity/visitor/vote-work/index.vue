@@ -36,7 +36,7 @@
                                 <v-layout column>
                                     <div v-for="item in items" :key="item.workId">
                                         <v-flex>
-                                            <work-item-show :data="item" :finish="finish" :router_param_value="item.id"></work-item-show>
+                                            <work-item-show :data="item" :finish="finish" :router_param_value="item.attendorId"></work-item-show>
                                         </v-flex>
                                     </div>
                                 </v-layout>
@@ -53,12 +53,10 @@
                                     <small>别着急请等选手提交作品</small>
                                 </v-flex>
                             </v-layout>
-
                         </div>
                     </v-layout>
                 </el-card>
             </v-flex>
-
         </v-layout>
     </v-container>
 
@@ -68,6 +66,7 @@
 import WorkItemShow from "@/components/work-item-show/index.vue";
 import http_activity from "@/http/activity";
 import http_work from "@/http/work";
+import http_player from "@/http/player";
 export default {
     created() {
         this.init();
@@ -91,32 +90,7 @@ export default {
             total: 10,
             activity_state: "",
             finish: false,
-            items: [
-                {
-                    id: "1",
-                    title: "参赛作品名",
-                    describe: "描述",
-                    workId: "123",
-                    file_name: "文件1",
-                    vote_number: 10
-                },
-                {
-                    id: "2",
-                    title: "参赛作品名",
-                    describe: "描述",
-                    workId: "124",
-                    file_name: "文件1",
-                    vote_number: 20
-                },
-                {
-                    id: "3",
-                    title: "参赛作品名",
-                    describe: "描述",
-                    workId: "12",
-                    file_name: "文件1",
-                    vote_number: 30
-                }
-            ]
+            items: []
         };
     },
     methods: {
@@ -125,54 +99,55 @@ export default {
         },
         init() {
             this.getWorks();
-            this.getActivity();
+            this.getActivityInfo();
         },
         async getWorks() {
-            try {
-                let data = {};
-                let works = await http_work.getWorks(this, data);
-                if (works.length > 0) {
-                    this.hava_data = true;
-                }
-            } catch (error) {
-                console.error(error);
-            }
-        },
-        async getActivity() {
             try {
                 let data = {
                     activityId: this.$route.params.activityId
                 };
-                this.activity = await http_activity.getActivityById(this, data);
-                let state = this.nowState(this.activity);
-                if (state < 0) {
-                    this.activity_state = "未开始";
-                } else if ((state = 0)) {
-                    this.activity_state = "进行中";
-                } else if (state > 0) {
-                    this.activity_state = "已结束";
-                }
+                this.items = await http_player.getAllPlayer(this, data);
+                this.items = this.items.filter(item => {
+                    return item.workname != null;
+                });
             } catch (error) {
                 console.error(error);
             }
         },
-        nowState(activity) {
-            if (activity.totalCount === 6) {
+        async getActivityInfo() {
+            try {
+                let data = {
+                    activityId: this.$route.params.activityId
+                };
+
+                let activity_nodes;
+                [this.activity, activity_nodes] = await Promise.all([
+                    http_activity.getActivityById(this, data),
+                    http_activity.getActivityNode(this, data)
+                ]);
+
+                this.nowState(this.activity, activity_nodes);
+            } catch (error) {}
+        },
+        nowState(activity, activity_nodes) {
+            let vote_node = activity_nodes.find(item => {
+                return item.priority === 3;
+            });
+            if (vote_node) {
                 if (activity.conutStatus < 3) {
-                    return -1;
+                    this.activity_state = "未开始";
+                    this.hava_data = false;
                 } else if (activity.conutStatus === 3) {
-                    return 0;
+                    this.activity_state = "进行中";
+                    this.hava_data = true;
                 } else if (activity.conutStatus > 3) {
-                    return 1;
+                    this.activity_state = "已结束";
+                    this.hava_data = false;
                 }
-            } else if (activity.totalCount === 5) {
-                if (activity.conutStatus < 3) {
-                    return -1;
-                } else if (activity.conutStatus === 3) {
-                    return 0;
-                } else if (activity.conutStatus > 3) {
-                    return 1;
-                }
+            } else {
+                this.$route.push({
+                    name: "404"
+                });
             }
         }
     }

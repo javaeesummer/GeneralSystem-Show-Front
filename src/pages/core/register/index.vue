@@ -18,7 +18,7 @@
                         <small>*评委请向主办方询问账号</small>
                         <br>
                         <v-flex>
-                            <v-btn>注册</v-btn>
+                            <v-btn @click="register()">注册</v-btn>
                         </v-flex>
                     </v-layout>
                 </el-card>
@@ -34,7 +34,7 @@ export default {
         return {
             username: "",
             password: "",
-            show: true,
+            show: false,
             rules: {
                 required: value => !!value || "必不可少"
             }
@@ -46,12 +46,32 @@ export default {
     methods: {
         init() {},
         async register() {
-            try {
-                let data = {};
-                await http_user.register(this, data);
-            } catch (error) {}
+            if (this.vaild()) {
+                try {
+                    let data = {
+                        username: this.username,
+                        password: this.password
+                    };
+                    await http_user.register(this, data);
+                    this.$message.success("注册成功");
+                    this.$router.push({
+                        name: "index"
+                    });
+                } catch (error) {
+                    this.$message.error("请输入正确的账号或密码");
+                    console.error(error);
+                }
+            } else {
+                this.$message.error("请输入正确的账号或密码");
+            }
         },
-        vaild() {}
+        vaild() {
+            if (!!this.username & !!this.password) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 };
 </script>

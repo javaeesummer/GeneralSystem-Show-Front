@@ -23,10 +23,12 @@ http_work.getWorks = function (Vue, data) {
 http_work.getWork = function (Vue, data) {
     return new Promise((resolve, reject) => {
         Vue.$axios
-            .post(base_url + "", Vue.$qs.stringify(data))
-            .then(result => {
+            .post(base_url + "judge/getWorksDetail", Vue.$qs.stringify(data),
 
-                resolve();
+        )
+            .then(result => {
+                resolve(result.data);
+            
             })
             .catch(err => {
                 reject(err);
@@ -105,9 +107,9 @@ http_work.upWork = function (Vue, data) {
 http_work.vote = function (Vue, data) {
     return new Promise((resolve, reject) => {
         Vue.$axios
-            .post(base_url + "", Vue.$qs.stringify(data))
+            .post(base_url + "judge/addVote", Vue.$qs.stringify(data))
             .then(result => {
-                resolve();
+                resolve(result.data);
             })
             .catch(err => {
                 reject(err);

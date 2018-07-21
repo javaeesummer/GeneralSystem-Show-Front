@@ -11,12 +11,12 @@
                             <span>{{activity.description}}</span>
                         </v-flex>
                         <v-layout align-center justify-start row>
-                            <v-flex md1>
+                            <!-- <v-flex md1>
                                 <span class="v-icon">
                                     <v-icon>people</v-icon>
                                     <span class="v-icon-number">{{activity.attend_person}}</span>
                                 </span>
-                            </v-flex>
+                            </v-flex> -->
                             <v-flex md4>
                                 <span class="v-icon">
                                     <v-icon>access_time</v-icon>
@@ -34,7 +34,8 @@
             <v-flex d-flex xs12 sm8 md8>
                 <v-layout column>
                     <v-flex>
-                        <v-stepper v-model="step" vertical non-linear>
+                        <!-- <v-stepper v-model="step" vertical non-linear>
+
                             <v-stepper-step :complete="step > 1" step="1">
                                 报名阶段
                             </v-stepper-step>
@@ -74,7 +75,6 @@
                                     <br>
                                     <span>结束时间:</span>
                                     <span>{{nodes[3].endTime}}</span>
-
                                 </div>
                             </v-stepper-content>
                             <v-stepper-step :complete="step > 4" step="4"> 专家评审</v-stepper-step>
@@ -97,6 +97,16 @@
                                 </router-link>
                             </v-stepper-content>
 
+                        </v-stepper> -->
+                        <v-stepper v-model="step" vertical non-linear v-for="i in nodes.length" :key="i">
+                            <v-stepper-step :complete="step > i" :step="i">
+                                {{nodes[i].priority}}
+                            </v-stepper-step>
+                            <v-stepper-content :step="i">
+                                <div v-if="nodes.length>=1">
+                                    {{i}}
+                                </div>
+                            </v-stepper-content>
                         </v-stepper>
                     </v-flex>
                 </v-layout>
@@ -145,6 +155,7 @@ import ActivityItem from "@/components/activity-item/index.vue";
 import Cookie from "js-cookie";
 import http_activity from "@/http/activity";
 import http_user from "@/http/user";
+
 import { mapState } from "vuex";
 export default {
     data() {
@@ -165,6 +176,7 @@ export default {
             },
             user_type: "",
             nextId: "",
+
             nodes: []
         };
     },
@@ -180,6 +192,19 @@ export default {
         this.init();
     },
     methods: {
+        fmtDate(obj) {
+            var date = new Date(obj);
+            var y = 1900 + date.getYear();
+            var m = "0" + (date.getMonth() + 1);
+            var d = "0" + date.getDate();
+            return (
+                y +
+                "-" +
+                m.substring(m.length - 2, m.length) +
+                "-" +
+                d.substring(d.length - 2, d.length)
+            );
+        },
         toNext(destination) {
             if (!!this.user_module.user_id) {
                 //已登录
@@ -206,12 +231,11 @@ export default {
         },
         async getActivityById() {
             try {
-                console.log(1);
                 let data = {
                     activityId: this.$route.params.activityId
                 };
                 this.activity = await http_activity.getActivityById(this, data);
-                // console.log(activity)
+                this.step = this.activity.conutStatus;
             } catch (error) {
                 console.error(error);
             }
@@ -221,9 +245,13 @@ export default {
                 let data = {
                     activityId: this.$route.params.activityId
                 };
+                let that = this;
                 this.nodes = await http_activity.getActivityNode(this, data);
-
                 this.nodes = this.sortNode(this.nodes);
+                this.nodes.forEach(element => {
+                    element.startTime = that.fmtDate(element.startTime);
+                    element.endTime = that.fmtDate(element.endTime);
+                });
             } catch (error) {
                 console.error(error);
             }
@@ -243,28 +271,73 @@ export default {
                     userId: this.user_module.user_id
                 };
 
-                await http_user.getUserInfo(this, data);
+                let userinfo = await http_user.getUserInfo(this, data);
 
                 // 2.
                 if (destination === "评委") {
-                    this.$route.push({
-                        name: "judge",
-                        params: { judgeId: judgeId }
-                    });
+                    if (userinfo.length === 0) {
+                    } else {
+                        if (!!userinfo[0].judgeId) {
+                            this.$router.push({
+                                name: "judge",
+                                params: { judgeId: userinfo.judgeId }
+                            });
+                        } else {
+                            this.$message.error("你不是评委");
+                        }
+                    }
                 } else if (destination === "参赛者") {
-                    this.$route.push({
-                        name: "player",
-                        params: { playerId: playerId }
-                    });
+                    if (userinfo.length === 0) {
+                        // 没有查到
+                        this.$confirm("请确定是否报名参赛?", "提示", {
+                            confirmButtonText: "确定",
+                            cancelButtonText: "取消",
+                            type: "warning"
+                        })
+                            .then(() => {
+                                that.registerAttendor();
+                            })
+                            .catch(() => {});
+                    } else {
+                        // 查到了
+                        if (!!userinfo[0].attendorId) {
+                            this.$router.push({
+                                name: "player",
+                                params: { playerId: userinfo[0].attendorId }
+                            });
+                        } else {
+                            this.$message.error(
+                                "评委你好，请点击下面的我要评审进行评审"
+                            );
+                        }
+                    }
                 }
             } catch (error) {
                 console.error(error);
             } finally {
                 loading.close();
-                that.$router.push({
-                    name: "judge",
-                    params: { playerId: 123 }
-                });
+            }
+        },
+        async registerAttendor() {
+            const loading = this.$loading({
+                lock: true,
+                text: "Loading",
+                spinner: "el-icon-loading",
+                background: "rgba(0, 0, 0, 0.7)"
+            });
+            let that = this;
+            try {
+                let data = {
+                    userId: this.user_module.user_id,
+                    activityId: this.$route.params.activityId
+                };
+                await http_user.registerPlayer(this, data);
+                this.$message.success("报名成功");
+            } catch (error) {
+                console.error(error);
+                this.$message.success("报名失败");
+            } finally {
+                loading.close();
             }
         },
         sortNode(data) {
@@ -308,4 +381,3 @@ export default {
     padding-top: 5px;
 }
 </style>
-

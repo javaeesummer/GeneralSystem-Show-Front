@@ -28,7 +28,7 @@
                         <v-card-text>
                             <div v-for="i in works.length" :key="i">
                                 <v-flex>
-                                    <work-item :data="works[i-1]" :router_param_value="works[i-1].workId"></work-item>
+                                    <work-item :data="works[i-1]" :router_param_value="works[i-1].workId" :player_id="works[i-1].attendorid"></work-item>
                                 </v-flex>
                             </div>
                         </v-card-text>
@@ -53,30 +53,6 @@ export default {
                 attend_person: "未上传"
             },
             works: [
-                {
-                    title: "作品1",
-                    workId: "3",
-                    review: true,
-                    content: "活动简介"
-                },
-                {
-                    title: "作品2",
-                    workId: "4",
-                    review: false,
-                    content: "活动简介"
-                },
-                {
-                    title: "作品3",
-                    workId: "2",
-                    review: true,
-                    content: "活动简介"
-                },
-                {
-                    title: "作品4",
-                    workId: "13",
-                    review: true,
-                    content: "活动简介"
-                }
             ]
         };
     },
@@ -88,15 +64,8 @@ export default {
     },
     methods: {
         init() {
-            this.getWorks();
-            this.getJudge();
-        },
-        getWork() {},
-        toPlayer() {
-            this.$router.push({ name: "player" });
-        },
-        toJudeg() {
-            this.$router.push({ name: "judge" });
+            // this.getWorks();
+            this.getPageInfo();
         },
         async filterWork(condition) {
             await this.getWorks(condition);
@@ -110,22 +79,34 @@ export default {
                 });
             }
         },
-        async getWorks(condition) {
-            try {
-                let data = {
-                    activityId:this.$route.params.activityId,
-                };
-                this.works = await http_judge.getWorksByGroup(this, data);
-            } catch (error) {
-                console.error(error);
-                this.works = error;
-            }
-        },
-        async getJudge(condition) {
+        async getPageInfo() {
             try {
                 let data = {};
-                let judge = await http_judge.getJudge(this, data);
-                
+                let that = this;
+                let judgeList = await http_judge.getJudge(this, data);
+                let judge = judgeList.find(item => {
+                    return (item.judgeid = that.$route.params.judgeId);
+                });
+            
+                data = {
+                    activityId: this.$route.params.activityId,
+                    groupId: judge.jugegroupid,
+                    judgeId: judge.judgeid
+                };
+                let workList = await http_judge.getWorksByGroup(this, data);
+                this.works = workList;
+                /*
+                 {
+                    title: "作品4",
+                    workId: "13",
+                    review: true,
+                    content: "活动简介"
+                }
+                */
+                this.works.forEach(element => {
+                    element["title"] = element.workname;
+                    element["review"] = element.ifjudged ? true : false;
+                });
             } catch (error) {
                 console.error(error);
             }

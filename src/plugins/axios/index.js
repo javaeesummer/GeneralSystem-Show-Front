@@ -10,16 +10,6 @@ axios.interceptors.response.use(res => {
   }else{
     return Promise.reject(res.data.message)
   }
-  // if (res.data.code !== undefined) {
-  //   if (res.data.success !== 0) {
-  //     Message.error(res.data.msg)
-  //     return Promise.reject(res.data.msg)
-  //   } else {
-  //     return res.data.data
-  //   }
-  // } else {
-  //   return res.data
-  // }
 }, err => {
   return Promise.reject(err)
 })

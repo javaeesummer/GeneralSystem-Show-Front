@@ -53,9 +53,15 @@ export default {
                     pagenum: this.current_page,
                     pagesize: this.page_size
                 };
-                this.items = await http_activity.getActivitys(this, data);
+                let previewdata = await http_activity.getActivitys(this, data);
+                this.items = previewdata.activityBeanViewList;
+
                 if (this.items.length > 0) {
+
+                    this.total = previewdata.count;
                     this.hava_date = true;
+                    // this.$db.set("activitys", this.items);
+                    // console.info(this.$db.get("activitys"))
                 }
             } catch (error) {}
         }
@@ -70,38 +76,6 @@ export default {
             page_size: 10,
             total: 15,
             items: [
-                {
-                    title: "活动1",
-                    sponsorName: "主办方asd",
-                    content: "活动真是好啊",
-                    people: 10,
-                    activityId: "123",
-                    startData: "2018-08-08"
-                },
-                {
-                    title: "活动1",
-                    sponsorName: "主办方asd",
-                    content: "活动真是好啊",
-                    people: 10,
-                    activityId: "124",
-                    startData: "2018-08-08"
-                },
-                {
-                    title: "活动2",
-                    sponsorName: "主办方asd",
-                    content: "活动真是好啊",
-                    people: 10,
-                    activityId: "125",
-                    startData: "2018-08-08"
-                },
-                {
-                    title: "活动2",
-                    sponsorName: "主办方asd",
-                    content: "活动真是好啊",
-                    people: 12,
-                    activityId: "126",
-                    startData: "2018-08-08"
-                }
             ]
         };
     }
