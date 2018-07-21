@@ -35,7 +35,7 @@
                 <v-layout column>
                     <v-flex>
                         <v-stepper v-model="step" vertical non-linear>
-                            <v-stepper-step :complete="step > 1" step="" >
+                            <v-stepper-step :complete="step > 1" step="1" >
                                 {{nodes[0].description}}
                             </v-stepper-step>
                             <v-stepper-content step="1">
