@@ -7,9 +7,7 @@
                         <v-flex>
                             <h2>{{activity.name}}</h2>
                         </v-flex>
-                        <v-flex>
-                            <span>{{activity.describe}}</span>
-                        </v-flex>
+                        
                         <v-flex>
                             <span class="v-icon">
                                 <svg version="1.1" role="presentation" width="9.142857142857142" height="9.142857142857142" viewBox="0 0 1024 1024" class="svg-icon active" style="width: 15px; height: 15px; transform: rotate(0deg) scale(1, 1);">
@@ -38,9 +36,15 @@
                                 <v-text-field label="作品简介" required v-model="upLoadData.description"></v-text-field>
                             </v-flex>
                             <v-flex xs12>
-                                <el-upload   ref="upload" action="http://47.104.236.227:8080/summar/file/uploadFile" :limit="limit" :onError="uploadError" :on-success="onSuccess">
-                                    <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-                                </el-upload>
+                                <div v-if="btnName==='未上传'">
+                                    <el-upload ref="upload" action="http://47.104.236.227:8080/summar/file/uploadFile" :limit="limit" :onError="uploadError" :on-success="onSuccess">
+                                        <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+                                    </el-upload>
+                                </div>
+                                <div v-else>
+                                    <a :href="worksrc" target="_blank">{{upLoadData.workname}}</a>
+                                 
+                                </div>
                             </v-flex>
                         </v-layout>
                     </v-container>
@@ -120,6 +124,7 @@ export default {
             },
             attend_person: "未上传",
             step: 0,
+            worksrc: "",
             /*
             我的作品状态
             0.未提交
@@ -195,6 +200,9 @@ export default {
                 if (work.length > 0) {
                     this.upLoadData = work[0];
                     this.attend_person = "已上传";
+                    this.worksrc =
+                        "http://47.104.236.227:8080/summar/file/downloadFile?attendorid=" +
+                        this.upLoadData.attendorid;
                 }
             } catch (error) {
                 console.error(error);
