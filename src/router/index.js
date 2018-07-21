@@ -15,7 +15,7 @@ router.beforeEach((to, from, next) => {
   // 验证当前路由所有的匹配中是否需要有登陆验证的
   if (to.matched.some(r => r.meta.requiresAuth)) {
     console.log(from)
-    if (Cookie.get("userId")) {
+    if (Cookie.get("userId")&&from.name==="activity-index") {
       next();
     } else {
       next({

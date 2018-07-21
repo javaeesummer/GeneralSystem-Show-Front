@@ -28,7 +28,7 @@ http_work.getWork = function (Vue, data) {
         )
             .then(result => {
                 resolve(result.data);
-            
+
             })
             .catch(err => {
                 reject(err);
@@ -119,9 +119,21 @@ http_work.vote = function (Vue, data) {
 http_work.downloadFile = function (Vue, data) {
     return new Promise((resolve, reject) => {
         Vue.$axios
-            .post(base_url + "downloadFile", Vue.$qs.stringify(data))
+            .post(base_url + "file/downloadFile", Vue.$qs.stringify(data))
             .then(result => {
                 resolve();
+            })
+            .catch(err => {
+                reject(err);
+            });
+    });
+}
+http_work.deleteFile = function (Vue, data) {
+    return new Promise((resolve, reject) => {
+        Vue.$axios
+            .post(base_url + "file/deleteFile", Vue.$qs.stringify(data))
+            .then(result => {
+                resolve(result.data);
             })
             .catch(err => {
                 reject(err);
