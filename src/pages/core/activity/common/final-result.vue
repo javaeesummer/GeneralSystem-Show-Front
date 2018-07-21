@@ -117,10 +117,38 @@ export default {
         },
         async getWorks() {
             try {
-                let data = {};
+                let data = {
+                    activityId:1
+                };
                 let works = await http_work.getWorks(this, data);
+                console.log("jeeeee");
+                console.log(works);
+                let itemlist=new Array();
                 if (works) {
                     this.hava_data = true;
+                    for(let i=0;i<works.length;i++){
+                        // console.log(works[i].username);
+                        let object={};
+                        object.title=works[i].workname;
+                        object.file_name=works[i].workname;
+                        object.workId=1;
+                    //      id: "3",
+                    // title: "参赛作品名",
+                    // describe: "描述",
+                    // workId: "12",
+                    // file_name: "文件1",
+                    // vote_number: 30
+                        object.id=works[i].userid;
+                        object.describe=works[i].description;
+                        object.vote_number=works[i].votenum;
+                        object.author=works[i].username;
+                        itemlist.push(object);
+                    }
+                    console.log("sss");
+                    // console.log(itemlist);
+                    // console.log(this.items);
+                    this.items=itemlist;
+                    // this.items = works;
                 }
             } catch (error) {
                 console.error(error);

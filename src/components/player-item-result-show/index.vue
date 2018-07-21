@@ -18,10 +18,10 @@
                                 <span class="v-icon-number">{{data.vote_number}}</span>
                             </span>
                         </v-flex>
-                        <v-flex md2>
+                        <v-flex md5>
                             <span class="v-icon-click">
                                 <font-awesome-icon icon="user-tie" size="1x" />
-                                <span class="v-icon-number">{{data.vote_number}}</span>
+                                <span style="width:100px" class="v-icon-number">{{data.author}}</span>
                             </span>
                         </v-flex>
                     </v-layout>

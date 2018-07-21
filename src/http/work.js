@@ -7,10 +7,10 @@ const http_work = {}
 http_work.getWorks = function (Vue, data) {
     return new Promise((resolve, reject) => {
         Vue.$axios
-            .post(base_url + "judge/getAttendorList", Vue.$qs.stringify(data))
+            .post(base_url + "judge/showAttendorEndResult", Vue.$qs.stringify(data))
             .then(result => {
 
-                resolve();
+                resolve(result.data);
             })
             .catch(err => {
                 reject(err);
