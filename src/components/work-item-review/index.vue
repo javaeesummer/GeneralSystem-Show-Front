@@ -144,7 +144,6 @@ export default {
             });
             try {
                 let mydata = {
-                    reviewId: this.openview.reviewid,
                     attendorId: this.openview.attendorid,
                     result: this.openview.result,
                     advice: this.openview.advice,

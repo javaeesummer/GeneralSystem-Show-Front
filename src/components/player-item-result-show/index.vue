@@ -85,7 +85,9 @@ export default {
                 background: "rgba(0, 0, 0, 0.7)"
             });
             try {
-                let data = {};
+                let data = {
+                    attendorId:this.data.id
+                };
                 this.judge_advices = await http_judge.getReview(this, data);
                 console.log(this.judge_advices);
                 this.dialog = true;
@@ -134,10 +136,7 @@ export default {
     color: #212121;
     position: relative;
     vertical-align: middle;
-    cursor: pointer;
-}
-.news__item-title:hover {
-    color: blue;
+   
 }
 .article-excerpt {
     margin-bottom: 10px;

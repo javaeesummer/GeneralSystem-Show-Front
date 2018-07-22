@@ -29,26 +29,39 @@
                         <v-flex>
                             <h2>参赛作品</h2>
                         </v-flex>
-                        <div v-if="hava_data&&items.length>0">
-                            <v-flex>
-                                <v-layout column>
-                                    <div v-for="item in items.slice((current_page-1)*page_size,current_page*page_size)" :key="item.workId">
-                                        <v-flex>
-                                            <work-item-show :data="item" :finish="finish" :router_param_value="item.attendorId"></work-item-show>
-                                        </v-flex>
-                                    </div>
+                        <div v-if="activity.conutStatus!=5">
+                            <div v-if="hava_data&&items.length>0">
+                                <v-flex>
+                                    <v-layout column>
+                                        <div v-for="item in items.slice((current_page-1)*page_size,current_page*page_size)" :key="item.workId">
+                                            <v-flex>
+                                                <work-item-show :data="item" :finish="finish" :router_param_value="item.attendorId"></work-item-show>
+                                            </v-flex>
+                                        </div>
+                                    </v-layout>
+                                </v-flex>
+                                <v-flex class="text-xs-center">
+                                    <el-pagination background layout="prev, pager, next" :total="total" :page-size="page_size" @current-change="onPageChange">
+                                    </el-pagination>
+                                </v-flex>
+                            </div>
+                            <div v-else class="no-content">
+                                <v-layout align-center justify-center column fill-height>
+                                    <v-spacer></v-spacer>
+                                    <v-flex>
+                                        <small>别着急请等选手提交作品</small>
+                                    </v-flex>
                                 </v-layout>
-                            </v-flex>
-                            <v-flex class="text-xs-center">
-                                <el-pagination background layout="prev, pager, next" :total="total" :page-size="page_size" @current-change="onPageChange">
-                                </el-pagination>
-                            </v-flex>
+                            </div>
                         </div>
-                        <div v-else class="no-content">
+                        <div v-else  class="no-content">
                             <v-layout align-center justify-center column fill-height>
                                 <v-spacer></v-spacer>
                                 <v-flex>
-                                    <small>别着急请等选手提交作品</small>
+                                    <small>活动已经结束查看</small>
+                                    <router-link :to="{name:'final-result'}">
+                                        <small>最后结果</small>
+                                    </router-link>
                                 </v-flex>
                             </v-layout>
                         </div>
