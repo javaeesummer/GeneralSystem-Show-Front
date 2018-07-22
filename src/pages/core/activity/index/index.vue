@@ -165,9 +165,7 @@ export default {
             can_player: false
         };
     },
-    watch: {
-        
-    },
+    watch: {},
     components: {
         ActivityItem
     },
@@ -328,6 +326,7 @@ export default {
                 }
             } catch (error) {
                 console.error(error);
+             
             } finally {
                 loading.close();
             }

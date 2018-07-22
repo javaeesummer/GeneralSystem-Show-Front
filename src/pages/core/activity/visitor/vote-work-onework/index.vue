@@ -40,7 +40,7 @@
                             <h2>下载地址</h2>
                         </v-flex>
                         <v-flex>
-                            <a :href="work.filepath" target="_blank">作品名字</a>
+                            <a :href="file_src" target="_blank">作品名字</a>
                         </v-flex>
                     </v-layout>
                 </el-card>
@@ -77,7 +77,9 @@ export default {
                 worksid: "",
                 description: "作品介绍",
                 filepath: ""
-            }
+            },
+            file_src:
+                "http://47.104.236.227:8080/summar/file/downloadFile?attendorid=1"
         };
     },
     created() {
@@ -94,18 +96,21 @@ export default {
                     attendorId: this.$route.params.workId
                 };
                 let player = await http_player.getPlayerById(this, data);
+                this.file_src =
+                    "http://47.104.236.227:8080/summar/file/downloadFile?attendorid=" +
+                    player.attendorid;
+                console.log(this.work.src);
                 this.attendorId = player.attendorid + "号";
+
                 this.vote_num = player.votenum;
                 this.work = (await http_work.getWork(this, data))[0];
-                this.work.filepath =
-                    "http://47.104.236.227:8080/summar/file/downloadFile?attendorid=" +
-                    this.attendorId;
             } catch (error) {
                 console.error(error);
             }
         },
 
         async vote() {
+            let that = this;
             if (this.can_vote === true) {
                 try {
                     let data = {
@@ -139,7 +144,9 @@ export default {
             } else {
                 this.$alert("不能投票", "抱歉", {
                     confirmButtonText: "确定",
-                    callback: action => {}
+                    callback: action => {
+                        that.vote_icon_color = "";
+                    }
                 });
             }
         },

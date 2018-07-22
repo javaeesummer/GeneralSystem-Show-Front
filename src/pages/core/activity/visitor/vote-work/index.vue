@@ -34,7 +34,7 @@
                         <div v-if="hava_data">
                             <v-flex>
                                 <v-layout column>
-                                    <div v-for="item in items" :key="item.workId">
+                                    <div v-for="item in items.slice((current_page-1)*page_size,current_page*page_size)" :key="item.workId">
                                         <v-flex>
                                             <work-item-show :data="item" :finish="finish" :router_param_value="item.attendorId"></work-item-show>
                                         </v-flex>
@@ -74,6 +74,12 @@ export default {
     components: {
         WorkItemShow
     },
+    watch: {
+        items: function(val) {
+            this.total = val.length;
+        },
+        current_page: function(val) {}
+    },
     data() {
         return {
             activity: {
@@ -87,7 +93,7 @@ export default {
             hava_data: false,
             current_page: 1,
             page_size: 10,
-            total: 10,
+            total: 0,
             activity_state: "",
             finish: false,
             items: []
@@ -132,7 +138,6 @@ export default {
             let vote_node = activity_nodes.find(item => {
                 return item.priority === 3;
             });
-            console.log("vote_node",vote_node)
             if (vote_node) {
                 if (activity.conutStatus < 3) {
                     this.activity_state = "未开始";
@@ -142,7 +147,7 @@ export default {
                     this.hava_data = true;
                 } else if (activity.conutStatus > 3) {
                     this.activity_state = "已结束";
-                    this.hava_data = false;
+                    this.hava_data = true;
                 }
             } else {
                 this.$route.push({

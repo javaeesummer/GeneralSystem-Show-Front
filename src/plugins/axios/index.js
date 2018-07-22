@@ -7,10 +7,11 @@ import axios from 'axios'
 axios.interceptors.response.use(res => {
   if (res.data.success === true) {
     return res.data
-  }else{
+  } else {
     return Promise.reject(res.data.message)
   }
 }, err => {
+  Message.error("服务器错误");
   return Promise.reject(err)
 })
 axios.defaults.headers.common['Content-Type'] = 'application/json;charset=UTF-8'
