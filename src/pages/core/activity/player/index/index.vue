@@ -16,6 +16,9 @@
                                 <span class="v-icon-number">{{attend_person}}</span>
                             </span>
                         </v-flex>
+                        <v-flex>
+                            <v-btn color="primary" @click="lookwork()">{{btnName}}</v-btn>
+                        </v-flex>
                     </v-layout>
                 </el-card>
             </v-flex>
@@ -36,7 +39,7 @@
                                 <v-text-field label="作品简介" required v-model="upLoadData.description"></v-text-field>
                             </v-flex>
                             <v-flex xs12>
-                                <div v-if="activity_info.conutStatus===2">
+                                <div v-if="step===2">
                                     <div v-if="btnName==='未上传'">
                                         <el-upload ref="upload" action="http://47.104.236.227:8080/summar/file/uploadFile" :limit="limit" :onError="uploadError" :on-success="onSuccess">
                                             <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
@@ -59,6 +62,7 @@
         </v-dialog>
         <v-layout row justify-center>
             <v-flex d-flex xs12 sm10 md10>
+
                 <v-stepper v-model="step" vertical>
                     <v-stepper-step :complete="step > 1" step="1">
                         报名阶段
@@ -66,12 +70,11 @@
                     <v-stepper-content step="1">
                         <span>报名成功</span>
                     </v-stepper-content>
-                    <v-stepper-step :complete="step > 2" step="2" :rules="[rules.have ]">
+                    <v-stepper-step :complete="step > 2" step="2">
                         作品提交阶段
-                        <small>未提交</small>
                     </v-stepper-step>
                     <v-stepper-content step="2">
-                        <v-btn color="primary" @click="   dialog = true">{{btnName}}</v-btn>
+
                     </v-stepper-content>
                     <v-stepper-step :complete="step > 3" step="3">
                         大众评审阶段
@@ -110,9 +113,14 @@ export default {
             }
         },
         step: function(val) {
-            console.log(val);
-            if (val > 2 && this.attend_person === "未上传") {
+            if (val > 2 && this.havawork === false) {
                 this.step = 2;
+            }
+        },
+        havawork: function(val) {
+            if (this.havawork) {
+                //有作品
+                this.btnName = "查看作品";
             }
         }
     },
@@ -121,7 +129,7 @@ export default {
             rules: {
                 have: value => false
             },
-            btnName: "上传作品",
+            btnName: "未上传",
             upLoadData: {
                 attendorid: this.$route.params.playerId,
                 workname: "",
@@ -138,6 +146,7 @@ export default {
             attend_person: "未上传",
             step: 0,
             worksrc: "",
+            havawork: false,
             /*
             我的作品状态
             0.未提交
@@ -179,6 +188,14 @@ export default {
         };
     },
     methods: {
+        lookwork() {
+            // 1.
+            let open=false;
+            if(havawork){
+              
+            }
+              this.dialog = true;
+        },
         init() {
             this.getPageInfo();
             this.getPlayerById();
@@ -214,6 +231,7 @@ export default {
                 let work = await http_work.getWork(this, data);
 
                 if (work.length > 0) {
+                    this.havawork = true;
                     this.upLoadData = work[0];
                     this.attend_person = "已上传";
                     this.worksrc =
@@ -234,14 +252,13 @@ export default {
                     this,
                     data
                 );
-                this.step = activity.conutStatus;
-
-                this.nodes = await http_activity.getActivityNode(this, data);
-                this.nodes = this.sortNode(this.nodes);
-                this.nodes.forEach(element => {
-                    element.startTime = that.fmtDate(element.startTime);
-                    element.endTime = that.fmtDate(element.endTime);
-                });
+                //step 表示当前结点
+                /*
+                    1.报名阶段
+                    2.提交作品阶段
+                    3.其他阶段
+                */
+                this.step = this.activity_info.conutStatus;
             } catch (error) {
                 console.error(error);
             }

@@ -30,19 +30,29 @@
                             <h2>优秀作品</h2>
                         </v-flex>
                         <div>
-                            <v-flex>
-                                <v-layout column>
-                                    <div v-for="item in items" :key="item.workId">
-                                        <v-flex>
-                                            <player-item-result-show :data="item" :finish="finish" :router_param_value="item.id"></player-item-result-show>
-                                        </v-flex>
-                                    </div>
+                            <div v-if="hava_data">
+                                <v-flex>
+                                    <v-layout column>
+                                        <div v-for="item in items" :key="item.workId">
+                                            <v-flex>
+                                                <player-item-result-show :data="item" :finish="finish" :router_param_value="item.id"></player-item-result-show>
+                                            </v-flex>
+                                        </div>
+                                    </v-layout>
+                                </v-flex>
+                                <v-flex class="text-xs-center">
+                                    <el-pagination background layout="prev, pager, next" :total="total" :page-size="page_size" @current-change="onPageChange">
+                                    </el-pagination>
+                                </v-flex>
+                            </div>
+                            <div v-else class="no-content">
+                                <v-layout align-center justify-center column fill-height>
+                                    <v-spacer></v-spacer>
+                                    <v-flex>
+                                        <small>这个活动有点冷清</small>
+                                    </v-flex>
                                 </v-layout>
-                            </v-flex>
-                            <v-flex class="text-xs-center">
-                                <el-pagination background layout="prev, pager, next" :total="total" :page-size="page_size" @current-change="onPageChange">
-                                </el-pagination>
-                            </v-flex>
+                            </div>
                         </div>
                     </v-layout>
                 </el-card>
@@ -79,32 +89,7 @@ export default {
             total: 10,
             activity_state: "",
             finish: false,
-            items: [
-                {
-                    id: "1",
-                    title: "参赛作品名",
-                    describe: "描述",
-                    workId: "123",
-                    file_name: "文件1",
-                    vote_number: 10
-                },
-                {
-                    id: "2",
-                    title: "参赛作品名",
-                    describe: "描述",
-                    workId: "124",
-                    file_name: "文件1",
-                    vote_number: 20
-                },
-                {
-                    id: "3",
-                    title: "参赛作品名",
-                    describe: "描述",
-                    workId: "12",
-                    file_name: "文件1",
-                    vote_number: 30
-                }
-            ]
+            items: []
         };
     },
     methods: {
@@ -118,36 +103,41 @@ export default {
         async getWorks() {
             try {
                 let data = {
-                    activityId:1
+                    activityId: this.$route.params.activityId
                 };
                 let works = await http_work.getWorks(this, data);
-                console.log("jeeeee");
-                console.log(works);
-                let itemlist=new Array();
+                // console.log("jeeeee");
+                // console.log(works);
+                let itemlist = new Array();
                 if (works) {
-                    this.hava_data = true;
-                    for(let i=0;i<works.length;i++){
+                    for (let i = 0; i < works.length; i++) {
                         // console.log(works[i].username);
-                        let object={};
-                        object.title=works[i].workname;
-                        object.file_name=works[i].workname;
-                        object.workId=1;
-                    //      id: "3",
-                    // title: "参赛作品名",
-                    // describe: "描述",
-                    // workId: "12",
-                    // file_name: "文件1",
-                    // vote_number: 30
-                        object.id=works[i].userid;
-                        object.describe=works[i].description;
-                        object.vote_number=works[i].votenum;
-                        object.author=works[i].username;
-                        itemlist.push(object);
+                        let object = {};
+                        object.title = works[i].workname;
+                        object.file_name = works[i].workname;
+                        // object.workId = 1;
+                        //      id: "3",
+                        // title: "参赛作品名",
+                        // describe: "描述",
+                        // workId: "12",
+                        // file_name: "文件1",
+                        // vote_number: 30
+                        object.id = works[i].userid;
+                        object.describe = works[i].description;
+                        object.vote_number = works[i].votenum;
+                        object.author = works[i].username;
+                        if (object.file_name) {
+                            itemlist.push(object);
+                        }
                     }
+
                     console.log("sss");
                     // console.log(itemlist);
                     // console.log(this.items);
-                    this.items=itemlist;
+                    this.items = itemlist;
+                    if (this.items.length > 0) {
+                        this.hava_data = true;
+                    }
                     // this.items = works;
                 }
             } catch (error) {
@@ -213,5 +203,8 @@ export default {
     -ms-flex-align: center;
     align-items: center;
     vertical-align: middle;
+}
+.no-content {
+    height: 200px;
 }
 </style>

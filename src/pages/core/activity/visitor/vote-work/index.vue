@@ -31,7 +31,7 @@
                         <v-flex>
                             <h2>参赛作品</h2>
                         </v-flex>
-                        <div v-if="hava_data">
+                        <div v-if="hava_data&&items.length>0">
                             <v-flex>
                                 <v-layout column>
                                     <div v-for="item in items.slice((current_page-1)*page_size,current_page*page_size)" :key="item.workId">

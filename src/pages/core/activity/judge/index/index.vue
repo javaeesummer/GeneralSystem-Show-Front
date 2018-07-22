@@ -7,11 +7,6 @@
                         <v-flex>
                             <h2>{{page.name}}</h2>
                         </v-flex>
-                        <v-flex>
-                            <span>
-                                你好 {{"asd"}} 评委
-                            </span>
-                        </v-flex>
                     </v-layout>
                 </el-card>
             </v-flex>
@@ -28,7 +23,7 @@
                         <v-card-text>
                             <div v-for="i in works.length" :key="i">
                                 <v-flex>
-                                    <work-item :data="works[i-1]" :router_param_value="works[i-1].workId" :player_id="works[i-1].attendorid"></work-item>
+                                    <work-item :data="works[i-1]" :router_param_value="works[i-1].workId" :player_id="works[i-1].attendorid" :can_review="can_review"></work-item>
                                 </v-flex>
                             </div>
                         </v-card-text>
@@ -43,17 +38,18 @@
 <script>
 import WorkItem from "@/components/work-item-review/index.vue";
 import http_judge from "@/http/judge.js";
+import http_activity from "@/http/activity";
 export default {
     data() {
         return {
             dialog: false,
+            can_review: false,
             page: {
                 name: "我的评审",
                 describe: "分配的小组:",
                 attend_person: "未上传"
             },
-            works: [
-            ]
+            works: []
         };
     },
     components: {
@@ -66,9 +62,10 @@ export default {
         init() {
             // this.getWorks();
             this.getPageInfo();
+            this.getActivityInfo();
         },
         async filterWork(condition) {
-            await this.getWorks(condition);
+            await this.getPageInfo();
             if (condition === "已评审") {
                 this.works = this.works.filter(item => {
                     return item.review === true;
@@ -80,6 +77,12 @@ export default {
             }
         },
         async getPageInfo() {
+            const loading = this.$loading({
+                lock: true,
+                text: "Loading",
+                spinner: "el-icon-loading",
+                background: "rgba(0, 0, 0, 0.7)"
+            });
             try {
                 let data = {};
                 let that = this;
@@ -87,7 +90,7 @@ export default {
                 let judge = judgeList.find(item => {
                     return (item.judgeid = that.$route.params.judgeId);
                 });
-            
+
                 data = {
                     activityId: this.$route.params.activityId,
                     groupId: judge.jugegroupid,
@@ -103,12 +106,67 @@ export default {
                     content: "活动简介"
                 }
                 */
+                this.works = this.works.filter(element => {
+                    return element.workname != null;
+                });
                 this.works.forEach(element => {
                     element["title"] = element.workname;
                     element["review"] = element.ifjudged ? true : false;
                 });
             } catch (error) {
                 console.error(error);
+            } finally {
+                loading.close();
+            }
+        },
+        async getActivityInfo() {
+            let that = this;
+            try {
+                let data = {
+                    activityId: this.$route.params.activityId
+                };
+                this.activity = await http_activity.getActivityById(this, data);
+                while (this.step < this.activity.conutStatus) {
+                    this.step = this.step + 1;
+                }
+
+                this.nodes = await http_activity.getActivityNode(this, data);
+                this.nodes = this.sortNode(this.nodes);
+
+                this.nowState(this.activity, this.nodes);
+            } catch (error) {
+                console.error("error", error);
+            } finally {
+            }
+        },
+        sortNode(data) {
+            function sequence(a, b) {
+                if (a.priority > b.priority) {
+                    return 1;
+                } else if (a.priority < b.priority) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            }
+            return data.sort(sequence);
+        },
+        nowState(activity, activity_nodes) {
+            let vote_node = activity_nodes.find(item => {
+                return item.priority === 4;
+            });
+            if (vote_node) {
+                if (activity.conutStatus < 3) {
+                    this.can_review = false;
+                } else if (activity.conutStatus === 4) {
+                    this.can_review = true;
+                } else if (activity.conutStatus > 4) {
+                    this.can_review = false;
+                }
+            } else {
+                this.$route.push({
+                    name: "404"
+                });
             }
         }
     }

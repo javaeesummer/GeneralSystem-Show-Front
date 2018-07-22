@@ -12,7 +12,7 @@
                         <div class="article-excerpt">{{data.src}}</div>
                     </v-flex>
                     <v-layout justify-start row fill-height>
-                        <v-flex md2>
+                        <v-flex md3>
                             <span class="v-icon-click">
                                 <font-awesome-icon icon="thumbs-up" size="1x" />
                                 <span class="v-icon-number">{{data.vote_number}}</span>
@@ -45,11 +45,11 @@
                         <v-layout column wrap>
                             <div v-for="i in  judge_advices.length" :key="i">
                                 <v-flex xs12 sm6 md4>
-                                    <large>专家{{i}}</large>
+                                    <small>专家{{i}}</small>
                                 </v-flex>
-                                <v-flex xs12 sm6 md4>
+                                <v-flex xs12 sm6 md12>
                                     <small>建议:</small>
-                                    <small>{{judge_advices[i].advice}}</small>
+                                    <span>{{judge_advices[i-1].advice}}</span>
                                 </v-flex>
                             </div>
                         </v-layout>
@@ -101,8 +101,8 @@ export default {
             default: "workId"
         },
         router_param_value: {
-            type: String,
-            default: "123"
+            type: Number,
+            default: 12
         },
         router_name: {
             type: String,

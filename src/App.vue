@@ -57,7 +57,7 @@ export default {
             password: "",
             rules: {
                 required: value => !!value || "不可或缺",
-                counter: value => value.length <= 10 || "Max 10 characters"
+                counter: value => value.length <= 15 || "Max 15 characters"
             },
             items: ["参赛者", "评委"],
             defaultType: "参赛者",

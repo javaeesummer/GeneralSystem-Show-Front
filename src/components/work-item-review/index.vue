@@ -57,7 +57,10 @@
                                     <v-subheader>作品</v-subheader>
                                 </v-flex>
                                 <v-flex xs8>
-                                    <v-subheader>作品</v-subheader>
+                                    <v-subheader>
+                                        <a :href="openview.filepath" target="_blank">查看作品</a>
+                                    </v-subheader>
+
                                 </v-flex>
                             </v-layout>
                         </v-flex>
@@ -65,9 +68,11 @@
                             <v-layout row>
                                 <v-flex xs4>
                                     <v-subheader>你的评分</v-subheader>
+
                                 </v-flex>
                                 <v-flex xs8 md6>
-                                    <v-text-field :value="openview.result" solo></v-text-field>
+                                    <v-text-field v-model="openview.result" solo></v-text-field>
+                                    <small>分数</small>
                                 </v-flex>
                             </v-layout>
                         </v-flex>
@@ -77,7 +82,7 @@
                                     <v-subheader>评语</v-subheader>
                                 </v-flex>
                                 <v-flex xs8 md6>
-                                    <v-textarea :value="openview.advice" solo></v-textarea>
+                                    <v-textarea v-model="openview.advice" solo></v-textarea>
                                 </v-flex>
                             </v-layout>
                         </v-flex>
@@ -102,25 +107,32 @@ export default {
             this.up();
         },
         openDialog() {
-            this.dialog = true;
             this.openReview();
         },
 
         async openReview() {
-            try {
-                // let data={
-                //     attendorId:,
-                //     judgeId:
-                // }
-                let mydata = {
-                    attendorId: this.player_id,
-                    judgeId: this.$route.params.judgeId
-                };
-                this.openview = await http_judege.openReview(this, mydata);
-                console.log("1", this.openview);
-                console.log("2", this.openview.description);
-            } catch (error) {
-                console.error(error);
+            if (this.can_review) {
+                try {
+                    // let data={
+                    //     attendorId:,
+                    //     judgeId:
+                    // }
+                    this.dialog = true;
+                    let mydata = {
+                        attendorId: this.player_id,
+                        judgeId: this.$route.params.judgeId
+                    };
+                    this.openview = await http_judege.openReview(this, mydata);
+                    this.openview.filepath =
+                        "http://47.104.236.227:8080/summar/file/downloadFile?attendorid=" +
+                        this.openview.attendorid;
+                    console.log("1", this.openview);
+                    console.log("2", this.openview.description);
+                } catch (error) {
+                    console.error(error);
+                }
+            } else {
+                this.$message.error("现在无法评审")
             }
         },
         async up() {
@@ -138,14 +150,14 @@ export default {
                     advice: this.openview.advice,
                     judgeId: this.$route.params.judgeId
                 };
+                console.log("a", mydata);
+                console.log("c", this.openview);
                 let success = await http_judege.modifyView(this, mydata);
-                if (success) {
-                    this.$message.success("修改成功");
-                } else {
-                    this.$message.error("修改失败");
-                }
+
+                this.$message.success("修改成功");
             } catch (error) {
                 console.error(error);
+                this.$message.error("修改失败");
             } finally {
                 loading.close();
             }
@@ -169,6 +181,10 @@ export default {
         },
         player_id: {
             type: Number
+        },
+        can_review: {
+            type: Boolean,
+            default: false
         }
     },
     data() {

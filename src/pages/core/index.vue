@@ -58,6 +58,9 @@ export default {
 
                 if (this.items.length > 0) {
                     this.total = previewdata.count;
+                    if(previewdata.count===0){
+                        this.total =this.items.length
+                    }
                     this.hava_date = true;
                     // this.$db.set("activitys", this.items);
                     // console.info(this.$db.get("activitys"))
