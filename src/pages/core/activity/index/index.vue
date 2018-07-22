@@ -323,14 +323,14 @@ export default {
                     // upwork 提交作品
                     if (!this.can_player) {
                         //不再报名阶段
-                        if (userinfo.length>0) {
+                        if (userinfo.length > 0) {
                             /*
                                 有内容
                                 如果attendorId不为空即以报名
                                 */
                         } else {
                             console.log("2");
-                            this.$message.error("已过报名时间");
+                            this.$message.error("现在不是报名时间");
                         }
                     } else {
                         //在报名阶段
@@ -363,21 +363,13 @@ export default {
                     }
                     if (!this.upwork) {
                         //不在提交作品阶段
-                        // this.$message.error("已过报名时间");
+                        // this.$message.error("现在不是报名时间");
                     } else {
                         //在提交作品阶段
                         if (userinfo.length === 0) {
                             //
-
-                            if (!!userinfo[0].attendorId) {
-                                /*
-                                有内容
-                                如果attendorId不为空即以报名
-                                */
-                            } else {
-                                console.log("2");
-                                this.$message.error("已过报名时间");
-                            }
+                           
+                            this.$message.error("现在不是报名时间");
                         } else {
                             // 查到了
                             if (!!userinfo[0].attendorId) {
@@ -404,7 +396,7 @@ export default {
                                 }
                             });
                         } else {
-                            this.$message.error("已过报名时间");
+                            this.$message.error("现在不是报名时间");
                         }
                     }
                 }

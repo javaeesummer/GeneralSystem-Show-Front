@@ -197,9 +197,9 @@ export default {
             if (this.step === 2) {
                 open = true;
             }
-            console.log(open)
+            console.log(open);
             if (open) {
-                console.log(1)
+                console.log(1);
                 this.dialog = true;
             }
         },
@@ -300,7 +300,9 @@ export default {
                 console.error(error);
                 this.$message.error(error);
             } finally {
-                await this.getWork();
+                this.getPageInfo();
+                this.getPlayerById();
+                this.getWork();
                 loading.close();
             }
         },

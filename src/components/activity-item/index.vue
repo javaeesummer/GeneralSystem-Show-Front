@@ -14,7 +14,7 @@
                             <div class="article-meta">{{data.hostId}} </div>
                         </v-layout>
                     </v-flex>
-                    <v-flex md2 column>
+                    <v-flex md3 column>
                         <v-layout>
                             <v-icon color=" ">access_time</v-icon>
                             <div class="article-meta"> {{data.startTime}} 至 {{data.endTime}}</div>
@@ -24,6 +24,13 @@
                         <v-layout>
                             <v-icon color=" ">people_outline</v-icon>
                             <div class="article-meta"> {{data.count}}</div>
+                        </v-layout>
+                    </v-flex>
+                    <v-flex md2 column>
+                        <v-layout>
+                            
+                            <v-icon color=" ">alarm</v-icon>
+                            <div class="article-meta"> {{activityState[data.conutStatus-1]}}</div>
                         </v-layout>
                     </v-flex>
                 </v-layout>
@@ -46,6 +53,17 @@ export default {
         data: {
             type: Object
         }
+    },
+    data() {
+        return {
+            activityState: [
+                "活动开始",
+                "提交作品",
+                "作品投票",
+                "评委打分",
+                "活动结束"
+            ]
+        };
     }
 };
 </script>
