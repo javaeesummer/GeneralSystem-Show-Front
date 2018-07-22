@@ -168,10 +168,10 @@
                                 </v-flex>
                                 <v-layout column justify-center align-center>
                                     <v-flex>
-                                        <v-btn large color="blue lighten-4" @click="toNext('参赛者')">我要参赛</v-btn>
+                                        <v-btn large color="blue lighten-4" @click="toNext('参赛者')">参赛者入口</v-btn>
                                     </v-flex>
                                     <v-flex>
-                                        <v-btn large color="blue lighten-4" @click="toNext('评委')">我要评审</v-btn>
+                                        <v-btn large color="blue lighten-4" @click="toNext('评委')">评委入口</v-btn>
                                     </v-flex>
                                 </v-layout>
                             </v-layout>
@@ -319,10 +319,19 @@ export default {
                         }
                     }
                 } else if (destination === "参赛者") {
+                    // can_player 报名
+                    // upwork 提交作品
                     if (!this.can_player) {
                         //不再报名阶段
-                        console.log(1)
-                        this.$message.error("已过报名时间");
+                        if (userinfo.length>0) {
+                            /*
+                                有内容
+                                如果attendorId不为空即以报名
+                                */
+                        } else {
+                            console.log("2");
+                            this.$message.error("已过报名时间");
+                        }
                     } else {
                         //在报名阶段
                         if (userinfo.length === 0) {
@@ -359,8 +368,16 @@ export default {
                         //在提交作品阶段
                         if (userinfo.length === 0) {
                             //
-                              console.log(2)
-                            this.$message.error("已过报名时间");
+
+                            if (!!userinfo[0].attendorId) {
+                                /*
+                                有内容
+                                如果attendorId不为空即以报名
+                                */
+                            } else {
+                                console.log("2");
+                                this.$message.error("已过报名时间");
+                            }
                         } else {
                             // 查到了
                             if (!!userinfo[0].attendorId) {
@@ -375,6 +392,19 @@ export default {
                                     "评委你好，请点击下面的我要评审进行评审"
                                 );
                             }
+                        }
+                    }
+
+                    if (userinfo.length != 0) {
+                        if (!!userinfo[0].attendorId) {
+                            this.$router.push({
+                                name: "player",
+                                params: {
+                                    playerId: userinfo[0].attendorId
+                                }
+                            });
+                        } else {
+                            this.$message.error("已过报名时间");
                         }
                     }
                 }

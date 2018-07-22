@@ -40,13 +40,13 @@
                             </v-flex>
                             <v-flex xs12>
                                 <div v-if="step===2">
-                                    <div v-if="btnName==='未上传'">
+                                    <div v-if='havawork===false'>
                                         <el-upload ref="upload" action="http://47.104.236.227:8080/summar/file/uploadFile" :limit="limit" :onError="uploadError" :on-success="onSuccess">
                                             <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
                                         </el-upload>
                                     </div>
                                     <div v-else>
-                                        <a :href="worksrc" target="_blank">{{upLoadData.workname}}</a>
+                                        <a :href="worksrc" target="_blank">我的作品</a>
                                     </div>
                                 </div>
                             </v-flex>
@@ -56,7 +56,7 @@
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="blue darken-1" flat @click.native="dialog = false">关闭</v-btn>
-                    <v-btn color="blue darken-1" flat @click.native="confirm()">上传</v-btn>
+                    <v-btn v-if='havawork===false' color="blue darken-1" flat @click.native="confirm()">上传</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -190,11 +190,18 @@ export default {
     methods: {
         lookwork() {
             // 1.
-            let open=false;
-            if(havawork){
-              
+            let open = false;
+            if (this.havawork) {
+                open = true;
             }
-              this.dialog = true;
+            if (this.step === 2) {
+                open = true;
+            }
+            console.log(open)
+            if (open) {
+                console.log(1)
+                this.dialog = true;
+            }
         },
         init() {
             this.getPageInfo();

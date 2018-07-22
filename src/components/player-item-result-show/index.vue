@@ -51,6 +51,10 @@
                                     <small>建议:</small>
                                     <span>{{judge_advices[i-1].advice}}</span>
                                 </v-flex>
+                                 <v-flex xs12 sm6 md12>
+                                    <small>评分:</small>
+                                    <span>{{judge_advices[i-1].result}}</span>
+                                </v-flex>
                             </div>
                         </v-layout>
                     </v-container>

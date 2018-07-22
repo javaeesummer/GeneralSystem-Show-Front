@@ -15,10 +15,8 @@
                                 <span class="v-icon">
                                     <v-icon>access_time</v-icon>
                                     <span class="v-icon-number">投票{{activity_state}}</span>
-
                                 </span>
                             </v-flex>
-
                         </v-layout>
                     </v-layout>
                 </el-card>

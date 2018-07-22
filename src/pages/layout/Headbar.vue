@@ -35,7 +35,6 @@ export default {
             this.$router.push({ name: "index" });
         },
         filter() {
-           
             if (this.user_id) {
                 // id不为空
                 this.loginOut();
@@ -57,6 +56,7 @@ export default {
                 .then(() => {
                     that.$store.commit("saveUserId", "");
                     Cookie.remove("userId");
+                    that.$router.go(0);
                 })
                 .catch(() => {});
         }
