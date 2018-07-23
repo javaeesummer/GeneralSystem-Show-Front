@@ -51,7 +51,7 @@ http_judge.upGrade = function (Vue, data) {
    获取评委信息
 */
 http_judge.getJudge = function (Vue, data) {
-    console.log(data)
+    
     return new Promise((resolve, reject) => {
         Vue.$axios
             .post(base_url + "user/getJudge", Vue.$qs.stringify(data))

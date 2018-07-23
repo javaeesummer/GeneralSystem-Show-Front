@@ -50,21 +50,25 @@ export default {
         async getActivity() {
             try {
                 let data = {
-                    pagenum: this.current_page,
-                    pagesize: this.page_size
+                    pagenum: 1,
+                    pagesize: 100
                 };
                 let previewdata = await http_activity.getActivitys(this, data);
                 this.items = previewdata.activityBeanViewList;
 
                 if (this.items.length > 0) {
                     this.total = previewdata.count;
-                    if(previewdata.count===0){
-                        this.total =this.items.length
+                    if (previewdata.count === 0) {
+                        this.total = this.items.length;
                     }
                     this.hava_date = true;
                     // this.$db.set("activitys", this.items);
-                    // console.info(this.$db.get("activitys"))
+                  
                 }
+                this.items = this.items.slice(
+                    (this.current_page - 1) * this.page_size,
+                    this.current_page * this.page_size
+                );
             } catch (error) {}
         }
     },
@@ -75,7 +79,7 @@ export default {
         return {
             hava_date: false,
             current_page: 1,
-            page_size: 10,
+            page_size: 8,
             total: 15,
             items: []
         };

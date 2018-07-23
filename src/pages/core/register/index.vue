@@ -1,6 +1,8 @@
 <template>
     <v-container fluid grid-list-md style="padding-top:5px">
         <v-layout row justify-center>
+           <br>
+           <br>
             <v-flex d-flex xs12 sm12 md10>
                 <el-card>
                     <v-layout column align-center wrap>
@@ -9,7 +11,7 @@
                         </v-flex>
 
                         <v-flex>
-                            <v-text-field :rules="[rules.required]" prepend-icon="account_circle" label="账号名" single-line v-model="username"></v-text-field>
+                            <v-text-field :rules="[rules.required,rules.counter]" prepend-icon="account_circle" label="账号名" single-line v-model="username"></v-text-field>
                         </v-flex>
 
                         <v-flex>
@@ -29,6 +31,7 @@
 
 <script>
 import http_user from "@/http/user";
+import Cookie from 'js-cookie'
 export default {
     data() {
         return {
@@ -36,8 +39,9 @@ export default {
             password: "",
             show: false,
             rules: {
-                required: value => !!value || "必不可少"
-            }
+                required: value => !!value || "不可或缺",
+                counter: value => value.length <= 15 || "Max 15 characters"
+            },
         };
     },
     created() {
@@ -54,6 +58,14 @@ export default {
                     };
                     await http_user.register(this, data);
                     this.$message.success("注册成功");
+                    let params = {
+                        username: this.username,
+                        password: this.password
+                    };
+                    let user_data = await http_user.login(this, params);
+                    Cookie.set("userId", user_data.userid);
+                    this.$store.commit("saveloginDialog", false);
+                    this.$store.commit("saveUserId", user_data.userid);
                     this.$router.push({
                         name: "index"
                     });
@@ -71,7 +83,7 @@ export default {
             } else {
                 return false;
             }
-        }
+        },
     }
 };
 </script>

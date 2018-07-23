@@ -113,11 +113,6 @@ export default {
         async openReview() {
             if (this.can_review) {
                 try {
-                    // let data={
-                    //     attendorId:,
-                    //     judgeId:
-                    // }
-                    this.dialog = true;
                     let mydata = {
                         attendorId: this.player_id,
                         judgeId: this.$route.params.judgeId
@@ -126,13 +121,12 @@ export default {
                     this.openview.filepath =
                         "http://47.104.236.227:8080/summar/file/downloadFile?attendorid=" +
                         this.openview.attendorid;
-                    console.log("1", this.openview);
-                    console.log("2", this.openview.description);
+                    this.dialog = true;
                 } catch (error) {
                     console.error(error);
                 }
             } else {
-                this.$message.error("现在无法评审")
+                this.$message.error("现在无法评审");
             }
         },
         async up() {

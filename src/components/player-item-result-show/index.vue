@@ -33,7 +33,6 @@
                     </v-flex>
                 </v-layout>
             </v-layout>
-
         </el-card>
         <v-dialog v-model="dialog" persistent scrollable max-width="400px">
             <v-card>
@@ -62,7 +61,6 @@
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="blue darken-1" flat @click.native="dialog = false">关闭</v-btn>
-
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -89,7 +87,7 @@ export default {
                     attendorId:this.data.id
                 };
                 this.judge_advices = await http_judge.getReview(this, data);
-                console.log(this.judge_advices);
+                
                 this.dialog = true;
             } catch (error) {
                 console.error(error);

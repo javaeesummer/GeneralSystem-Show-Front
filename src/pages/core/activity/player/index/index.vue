@@ -7,7 +7,6 @@
                         <v-flex>
                             <h2>{{activity.name}}</h2>
                         </v-flex>
-
                         <v-flex>
                             <span class="v-icon">
                                 <svg version="1.1" role="presentation" width="9.142857142857142" height="9.142857142857142" viewBox="0 0 1024 1024" class="svg-icon active" style="width: 15px; height: 15px; transform: rotate(0deg) scale(1, 1);">
@@ -74,23 +73,25 @@
                         作品提交阶段
                     </v-stepper-step>
                     <v-stepper-content step="2">
-
+                        <small v-if="flag1">未提交作品</small>
                     </v-stepper-content>
                     <v-stepper-step :complete="step > 3" step="3">
                         大众评审阶段
-                        <span v-if="step>3">"1"</span>
+
                     </v-stepper-step>
                     <v-stepper-content step="3">
                     </v-stepper-content>
                     <v-stepper-step :complete="step > 4" step="4">
                         专家评审阶段
-                        <small v-if="step>4">"1"</small>
+
                     </v-stepper-step>
                     <v-stepper-content step="4">
                     </v-stepper-content>
                     <v-stepper-step step="5">最终结果</v-stepper-step>
                     <v-stepper-content step="5">
-                        <small>{{workState[state].state_name}}</small>
+                        <router-link :to="{name:'final-result'}">
+                            <small>查看结果</small>
+                        </router-link>
                     </v-stepper-content>
                 </v-stepper>
             </v-flex>
@@ -113,9 +114,7 @@ export default {
             }
         },
         step: function(val) {
-            if (val > 2 && this.havawork === false) {
-                this.step = 2;
-            }
+          
         },
         havawork: function(val) {
             if (this.havawork) {
@@ -126,6 +125,7 @@ export default {
     },
     data() {
         return {
+            flag1: false,
             rules: {
                 have: value => false
             },
@@ -180,16 +180,15 @@ export default {
                 {
                     state_name: "最终结果"
                 }
-            ],
-            count: 0,
-            activity_info: {
-                conutStatus: 0
-            }
+            ]
+
+            // activity_info: {
+            //     conutStatus: 0
+            // }
         };
     },
     methods: {
         lookwork() {
-            // 1.
             let open = false;
             if (this.havawork) {
                 open = true;
@@ -197,23 +196,22 @@ export default {
             if (this.step === 2) {
                 open = true;
             }
-            console.log(open);
+
             if (open) {
-                console.log(1);
+              
                 this.dialog = true;
             }
         },
         init() {
-            this.getPageInfo();
-            this.getPlayerById();
-            this.getWork();
+            this.getPageInfo(), this.getPlayerById(), this.getWork();
         },
+
         onSuccess(response, file, fileList) {
             this.upLoadData.filepath = response.data.filepath;
             this.upLoadData.filesize = response.data.fileSize;
         },
         uploadError() {
-            this.$message.error("上传失败");
+            this.$message.error("上传文件失败");
         },
         submitUpload() {
             this.upLoadData.attendorod = this.$route.params.attendorId;
@@ -255,7 +253,7 @@ export default {
                 let data = {
                     activityId: this.$route.params.activityId
                 };
-                this.activity_info = await http_activity.getActivityById(
+                let activity_info = await http_activity.getActivityById(
                     this,
                     data
                 );
@@ -265,7 +263,25 @@ export default {
                     2.提交作品阶段
                     3.其他阶段
                 */
-                this.step = this.activity_info.conutStatus;
+             
+                this.step = activity_info.conutStatus;
+                data = {
+                    attendorId: this.$route.params.playerId
+                };
+                let work = await http_work.getWork(this, data);
+
+                if (work.length > 0) {
+                    this.havawork = true;
+                    this.upLoadData = work[0];
+                    this.attend_person = "已上传";
+                    this.worksrc =
+                        "http://47.104.236.227:8080/summar/file/downloadFile?attendorid=" +
+                        this.upLoadData.attendorid;
+                }
+                if (this.step > 2 && this.havawork === false) {
+                    this.step = 2;
+                    this.flag1 = true;
+                }
             } catch (error) {
                 console.error(error);
             }

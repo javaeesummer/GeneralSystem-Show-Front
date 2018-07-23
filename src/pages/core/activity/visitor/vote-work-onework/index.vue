@@ -99,7 +99,7 @@ export default {
                 this.file_src =
                     "http://47.104.236.227:8080/summar/file/downloadFile?attendorid=" +
                     player.attendorid;
-                console.log(this.work.src);
+             
                 this.attendorId = player.attendorid + "号";
 
                 this.vote_num = player.votenum;
@@ -178,7 +178,7 @@ export default {
             let vote_node = activity_nodes.find(item => {
                 return item.priority === 3;
             });
-            console.log(activity.conutStatus);
+         
             //如果有
             if (vote_node) {
                 if (activity.conutStatus < 3) {

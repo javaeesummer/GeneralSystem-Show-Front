@@ -308,7 +308,7 @@ export default {
                     if (userinfo.length === 0) {
                         this.$message.error("你不是评委");
                     } else {
-                        // console.log(userinfo.judgeId);
+                     
                         if (!!userinfo[0].judgeId) {
                             this.$router.push({
                                 name: "judge",
@@ -329,7 +329,7 @@ export default {
                                 如果attendorId不为空即以报名
                                 */
                         } else {
-                            console.log("2");
+                           
                             this.$message.error("现在不是报名时间");
                         }
                     } else {

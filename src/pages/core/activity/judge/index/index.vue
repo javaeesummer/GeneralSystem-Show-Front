@@ -88,9 +88,10 @@ export default {
                 let that = this;
                 let judgeList = await http_judge.getJudge(this, data);
                 let judge = judgeList.find(item => {
-                    return (item.judgeid = that.$route.params.judgeId);
+                    return (item.judgeid === that.$route.params.judgeId);
                 });
 
+                console.log(judge)
                 data = {
                     activityId: this.$route.params.activityId,
                     groupId: judge.jugegroupid,
@@ -129,10 +130,8 @@ export default {
                 while (this.step < this.activity.conutStatus) {
                     this.step = this.step + 1;
                 }
-
                 this.nodes = await http_activity.getActivityNode(this, data);
                 this.nodes = this.sortNode(this.nodes);
-
                 this.nowState(this.activity, this.nodes);
             } catch (error) {
                 console.error("error", error);
@@ -152,6 +151,7 @@ export default {
             return data.sort(sequence);
         },
         nowState(activity, activity_nodes) {
+            // 评委只有在评审阶段才评审
             let vote_node = activity_nodes.find(item => {
                 return item.priority === 4;
             });

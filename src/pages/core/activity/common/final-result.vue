@@ -106,12 +106,11 @@ export default {
                     activityId: this.$route.params.activityId
                 };
                 let works = await http_work.getWorks(this, data);
-                // console.log("jeeeee");
-                // console.log(works);
+              
                 let itemlist = new Array();
                 if (works) {
                     for (let i = 0; i < works.length; i++) {
-                        // console.log(works[i].username);
+                       
                         let object = {};
                         object.title = works[i].workname;
                         object.file_name = works[i].workname;
@@ -131,9 +130,8 @@ export default {
                         }
                     }
 
-                    console.log("sss");
-                    // console.log(itemlist);
-                    // console.log(this.items);
+                  
+                
                     this.items = itemlist;
                     if (this.items.length > 0) {
                         this.hava_data = true;
