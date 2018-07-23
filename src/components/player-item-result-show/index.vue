@@ -84,8 +84,9 @@ export default {
             });
             try {
                 let data = {
-                    attendorId:this.data.id
+                    attendorId:this.data.attendorId
                 };
+                console.log(this.data)
                 this.judge_advices = await http_judge.getReview(this, data);
                 
                 this.dialog = true;

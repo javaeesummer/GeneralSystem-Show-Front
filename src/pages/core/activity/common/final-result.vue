@@ -122,6 +122,7 @@ export default {
                         // file_name: "文件1",
                         // vote_number: 30
                         object.id = works[i].userid;
+                          object.attendorId = works[i].attendorId;
                         object.describe = works[i].description;
                         object.vote_number = works[i].votenum;
                         object.author = works[i].username;
